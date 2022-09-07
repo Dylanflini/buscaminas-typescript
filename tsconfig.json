@@ -1,0 +1,28 @@
+{
+	"compilerOptions": {
+		"target": "ES2017",
+    // "module": "es2015",
+    // "moduleResolution": "node",
+    // "lib": ["es2016", "dom", "es5"],
+		// "target": "ESNext",
+		// "declaration": false,
+		// "useDefineForClassFields": true,
+		// "lib": ["DOM", "DOM.Iterable", "ESNext"],
+		// "allowJs": false,
+		// "skipLibCheck": false,
+		// "esModuleInterop": true,
+		// "noImplicitAny": true,
+		// "allowSyntheticDefaultImports": true,
+		"strict": true,
+		// "forceConsistentCasingInFileNames": true,
+		// "module": "ESNext",
+		"moduleResolution": "node",
+		
+		// "resolveJsonModule": true,
+		// "isolatedModules": true,
+		// "noEmit": true,
+		"outDir": "public"
+	},
+	"files": ["buscaminas/infrastructure/ui/index.ts"],
+	// "exclude": ["node_modules", "**/*.test.ts", "**/*.test.tsx", "build"],
+}
