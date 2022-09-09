@@ -1,0 +1,52 @@
+	
+@startuml
+left to right direction
+actor Player as p
+
+package GameBoard {
+  usecase "Start game" as sg
+  usecase "Re start game" as rg
+}
+
+package MineSweeper {
+  usecase "Mark flag" as mf
+  usecase "Unmark flag" as uf
+  usecase "Expose cell" as ec
+
+  usecase "cell exposed with a bomb" as ec_b
+  usecase "game lost" as ec_gl
+
+  usecase "cell exposed without a bomb" as ec_nb
+    usecase "neighbours without bombs" as ec_nnb
+    usecase "neighbours with bombs" as ec_nwb
+      usecase "show quantity bombs around" as ec_sqb
+    usecase "last cell without bomb" as ec_lcnb
+      usecase "game won" as ec_gw
+
+  ' usecase "neighbours without` bombs" as ec_nnb
+
+}
+
+p --> sg
+p --> rg
+
+p --> mf
+p --> uf
+p --> ec
+
+ec --> ec_b
+ec_b --> ec_gl
+
+ec --> ec_nb
+
+ec_nb --> ec_nnb
+
+ec_nnb --> ec : for each neighbours cell
+
+ec_nb --> ec_nwb
+ec_nwb --> ec_sqb
+
+ec_nb --> ec_lcnb
+ec_lcnb --> ec_gw
+
+@enduml

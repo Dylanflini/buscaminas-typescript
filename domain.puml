@@ -1,0 +1,44 @@
+object board_game
+object minesweeper
+
+object board {
+  id = number *
+  flag_available = number
+  'game_timer = number
+  'temporizador
+}
+
+object cell {
+  position = array
+  exposed = boolean
+  ' withBomb = boolean
+  ' flagged = boolean
+  ' "cantidad bombas vecinas" = number*
+}
+
+object bombs_counter {
+  position = array
+  quantity = number
+}
+
+object bomb {
+  position = array
+}
+
+object flag {
+  position = array
+}
+
+board_game -> minesweeper
+minesweeper *-- board
+
+bombs_counter o-- "n" board
+bomb o-- "n" board
+flag o-- "n" board
+
+board --o "n" cell
+
+
+' Object03 *-- Object04
+' Object05 o-- "4" Object06
+' Object07 .. Object08 : some labels
