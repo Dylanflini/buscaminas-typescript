@@ -1,15 +1,38 @@
-import { ICellInBoard } from '../entity/cell'
-import { GameBoard, IGameBoard } from '../entity/game-board'
+import { ICellInBoard } from '@domain/cell'
+import {
+	GameBoard,
+	IGameBoard,
+	BoardGameI,
+	InitialData,
+} from '@domain/game-board'
+import { GameBoardRepository } from '@domain/game-board-repository'
 /*
 	casos de uso / acciones del usuario:
 
- - obtener tablero de juego
+ - crear tablero de juego
  - reiniciar el juego
  - marcar una celda como bomba
  - desmarcar una celda como bomba
  - exponer el contenido de una celda
 
 */
+
+export const createGameBoard = async (
+	repository: GameBoardRepository,
+	{ rows, columns, totalBombs }: InitialData
+): Promise<BoardGameI> => {
+	return await repository.saveGameBoard({ rows, columns, totalBombs })
+}
+
+export const resetGame = () => {}
+
+export const markCellAsBomb = (id: string) => {
+	return ''
+}
+
+export const unCheckCell = (id: string) => {}
+
+export const exposeCell = (id: string) => {}
 
 /*
 
@@ -33,8 +56,6 @@ si las celdas que quedan sin marcar son las mismas que las bombas.
 
 - si se marcar una celda se debe disminuir las bombas que quedan
 - las celdas marcadas como bomba no pueden ser mayor a la cantidad de bombas totales
-
-
 
 */
 

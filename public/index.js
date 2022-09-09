@@ -1,3 +1,4 @@
+"use strict";
 (() => {
   var __accessCheck = (obj, member, msg) => {
     if (!member.has(obj))
@@ -18,7 +19,7 @@
     return value;
   };
 
-  // buscaminas/domain/entity/cell.ts
+  // buscaminas/domain/cell.ts
   var _wasMarkedAsBomb, _wasExposed;
   var Cell = class {
     constructor(x, y, id, isBomb) {
@@ -60,7 +61,7 @@
   _cellsAround = new WeakMap();
   _totalBombsAround = new WeakMap();
 
-  // buscaminas/domain/entity/game-board.ts
+  // buscaminas/domain/game-board.ts
   var _bombs;
   var GameBoard = class {
     constructor({
@@ -166,7 +167,11 @@
         return new Cell(x, y, index, isBomb);
       });
       this.cells = cells.map((cell) => {
-        return new CellInBoard(cell, this.getCellsAround(cells, cell).map((c) => c.getId()), this.getTotalBombsAround(cells, cell));
+        return new CellInBoard(
+          cell,
+          this.getCellsAround(cells, cell).map((c) => c.getId()),
+          this.getTotalBombsAround(cells, cell)
+        );
       });
     }
   };
@@ -175,7 +180,10 @@
     return Math.floor(Math.random() * maxValue);
   }
 
-  // buscaminas/domain/application/use-cases.ts
+  // buscaminas/application/use-cases.ts
+  var createGameBoard = async (repository, { rows, columns, totalBombs }) => {
+    return await repository.saveGameBoard({ rows, columns, totalBombs });
+  };
   var _handleLose, _handleWin;
   var UseCase = class {
     constructor(table) {
@@ -216,14 +224,32 @@
   _handleLose = new WeakMap();
   _handleWin = new WeakMap();
 
+  // buscaminas/infrastructure/data/index.ts
+  var dataRepository = {
+    saveGameBoard: async () => {
+      return {
+        cells: [
+          { x: 0, y: 0 },
+          { x: 1, y: 0 },
+          { x: 0, y: 1 },
+          { x: 1, y: 1 }
+        ],
+        totalMines: 4,
+        remainingMines: 4,
+        hasWonGame: false,
+        hasLostGame: false
+      };
+    }
+  };
+
   // buscaminas/infrastructure/ui/index.ts
-  console.time("hola");
   var initialData = {
     rows: 5,
     columns: 5,
     totalBombs: 2
   };
   var buscaminas = new UseCase(initialData);
+  createGameBoard(dataRepository, initialData).then((r) => console.log(r));
   var $totalBombs = document.getElementById("total-bombs");
   var root = document.getElementById("root");
   var fragment = document.createDocumentFragment();
@@ -271,7 +297,9 @@
       console.log({ exposedCells });
       exposedCells.forEach((cell) => {
         var _a;
-        const element = document.getElementById(cell.getId().toString());
+        const element = document.getElementById(
+          cell.getId().toString()
+        );
         if (element) {
           if (cell.isBomb) {
             element.style.backgroundColor = "red";
@@ -295,7 +323,9 @@
       root == null ? void 0 : root.removeEventListener("click", exposeCellListener);
       root == null ? void 0 : root.removeEventListener("contextmenu", secondClickListener);
       buscaminas.getCells().forEach((cell) => {
-        const element = document.getElementById(cell.getId().toString());
+        const element = document.getElementById(
+          cell.getId().toString()
+        );
         if (element) {
           if (cell.isExposed()) {
             console.log("paso");

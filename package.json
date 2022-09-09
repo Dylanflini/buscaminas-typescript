@@ -6,7 +6,7 @@
   "scripts": {
     "test": "jest",
     "build": "esbuild buscaminas/infrastructure/ui/index.ts --bundle --outfile=public/index.js",
-    "watch": "esbuild buscaminas/infrastructure/ui/index.ts --bundle --outfile=public/index.js --watch "
+    "dev": "esbuild buscaminas/infrastructure/ui/index.ts --bundle --outfile=public/index.js --watch "
   },
   "author": "",
   "license": "ISC",
@@ -14,6 +14,7 @@
     "@types/jest": "^27.4.1",
     "esbuild": "^0.14.27",
     "jest": "^27.5.1",
+    "node-json-db": "^2.1.1",
     "ts-jest": "^27.1.3",
     "ts-node": "^10.7.0",
     "typescript": "^4.6.2"

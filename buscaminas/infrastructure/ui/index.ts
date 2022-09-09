@@ -1,8 +1,7 @@
-import { UseCase } from '../../domain/application/use-cases'
+import { UseCase, createGameBoard } from 'useCases/use-cases'
+import { dataRepository } from '@infrastructure/data'
 
 // Infrastructure
-
-console.time('hola')
 
 const initialData = {
 	rows: 5,
@@ -11,6 +10,8 @@ const initialData = {
 }
 
 const buscaminas = new UseCase(initialData)
+
+createGameBoard(dataRepository, initialData).then(r => console.log(r))
 
 // UI
 const $totalBombs = document.getElementById('total-bombs')

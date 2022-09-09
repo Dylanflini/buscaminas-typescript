@@ -14,16 +14,19 @@ si las celdas que quedan sin marcar son las mismas que las bombas.
 
 */
 
-interface BoardGame {
+export interface InitialData {
+	rows: number
+	columns: number
+	totalBombs: number
+}
+
+export interface BoardGameI {
 	cells: { x: number; y: number }[]
 	totalMines: number
 	remainingMines: number
 	hasWonGame: boolean
 	hasLostGame: boolean
 }
-
-const createBoard = (totalBombs: number) => {}
-const exposeCell = (board: BoardGame, cell) => {}
 
 // const markCellAsBomb = (board: IGameBoard, cell: ICellInBoard) => {
 // 	if(board.getRemainingBoms()){
