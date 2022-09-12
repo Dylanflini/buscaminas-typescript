@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "build": "esbuild buscaminas/infrastructure/ui/index.ts --bundle --outfile=public/index.js",
-    "dev": "esbuild buscaminas/infrastructure/ui/index.ts --bundle --outfile=public/index.js --watch "
+    "build": "esbuild minesweeper/infrastructure/ui/index.ts --bundle --outfile=public/index.js",
+    "dev": "esbuild minesweeper/infrastructure/ui/index.ts --bundle --outfile=public/index.js --watch "
   },
   "author": "",
   "license": "ISC",

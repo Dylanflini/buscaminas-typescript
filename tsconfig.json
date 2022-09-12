@@ -4,24 +4,21 @@
 		"strict": true,
 		"moduleResolution": "node",
 		"outDir": "public",
-		"baseUrl": "buscaminas",
+		"baseUrl": ".",
 		"paths": {
-			"@domain/*": [
-				"domain/*"
+			"@minesweeper/*": [
+				"minesweeper/*"
 			],
-			"@useCases/*": [
-				"useCases/*"
-			],
-			"@infrastructure/*": [
-				"infrastructure/*"
+			"@game-board/*": [
+				"game-board/*"
 			]
 		}
 	},
 	"include": [
-		"buscaminas"
+		"minesweeper",
+		"game-board"
 	],
 	"files": [
-		"buscaminas/infrastructure/ui/index.ts"
+		"minesweeper/infrastructure/ui/index.ts"
 	],
-	// "exclude": ["node_modules", "**/*.test.ts", "**/*.test.tsx", "build"],
 }
