@@ -2,8 +2,11 @@ object board_game
 object minesweeper
 
 object board {
-  id = number *
+  id = string *
   flag_available = number
+  bombs_available = number
+  rows = numbers
+  columns = numbers
   'game_timer = number
   'temporizador
 }
@@ -16,7 +19,8 @@ object cell {
   ' "cantidad bombas vecinas" = number*
 }
 
-object bombs_counter {
+' inform quantity of bombs in each cell of the matrix related with their neighbors
+object neighbors_bombs_counter {
   position = array
   quantity = number
 }
@@ -31,12 +35,11 @@ object flag {
 
 board_game -> minesweeper
 minesweeper *-- board
-
-bombs_counter o-- "n" board
+neighbors_bombs_counter o-- "n" board
 bomb o-- "n" board
 flag o-- "n" board
 
-board --o "n" cell
+board --o "row x column" cell
 
 
 ' Object03 *-- Object04
