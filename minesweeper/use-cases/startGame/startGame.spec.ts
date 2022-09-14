@@ -1,6 +1,26 @@
 import { startGameUseCase } from './startGame'
 
 describe('start game', () => {
+	describe('props validations', () => {
+		it('should throw if props columns or rows are not valid', () => {
+			expect(() =>
+				startGameUseCase({ bombs: 1, columns: 3, rows: 1 })
+			).toThrowError('rows must be greater than 1')
+
+			expect(() =>
+				startGameUseCase({ bombs: 1, columns: 1, rows: 3 })
+			).toThrowError('columns must be greater than 1')
+		})
+
+		it('should throw if props not contain bombs', () => {
+			const props = { bombs: -1, rows: 2, columns: 2 }
+
+			expect(() => startGameUseCase(props)).toThrowError(
+				'bombs must be greater than 0'
+			)
+		})
+	})
+
 	it('shoult return initial board', () => {
 		const props = { bombs: 2, columns: 3, rows: 2 }
 
@@ -33,7 +53,7 @@ describe('start game', () => {
 	})
 
 	it('should return initial cells', () => {
-		const props = { bombs: 0, rows: 3, columns: 2 }
+		const props = { bombs: 1, rows: 3, columns: 2 }
 
 		const { cells } = startGameUseCase(props)
 

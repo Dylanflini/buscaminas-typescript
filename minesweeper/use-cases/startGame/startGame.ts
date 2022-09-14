@@ -23,6 +23,16 @@ export const startGameUseCase: IStartGameUseCase = ({
 	rows,
 	columns,
 }) => {
+	if (bombsInput < 1) {
+		throw new Error('bombs must be greater than 0')
+	}
+	if (rows < 2) {
+		throw new Error('rows must be greater than 1')
+	}
+	if (columns < 2) {
+		throw new Error('columns must be greater than 1')
+	}
+
 	const totalCells = columns * rows
 
 	const cells: CellModel[] = [...Array(totalCells)].map(() => ({
@@ -40,7 +50,8 @@ export const startGameUseCase: IStartGameUseCase = ({
 	}
 
 	const neighBorsBombsCounter: NeighborsBombsCounter[] = Array(totalCells)
-	const bombs: BombModel[] = Array(bombsInput)
+
+	let bombs: BombModel[] = Array(bombsInput)
 
 	return {
 		id: '111-222-333',
