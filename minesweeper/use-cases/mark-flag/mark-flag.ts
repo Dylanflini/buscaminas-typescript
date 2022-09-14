@@ -7,7 +7,6 @@ interface IMarkFlagProps {
 
 type IMarkFlagResponse = BoardModel;
 
-
 type IMarkFlagUseCase = (props: IMarkFlagProps) => IMarkFlagResponse;
 
 /**
