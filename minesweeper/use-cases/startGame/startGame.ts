@@ -1,10 +1,11 @@
 import { BoardModel } from '@minesweeper/domain/Board.model'
 import { BombModel } from '@minesweeper/domain/Bomb.model'
 import { CellModel } from '@minesweeper/domain/Cell.model'
-import { FlagModel } from '@minesweeper/domain/Flag.model'
+import { IDataRepository } from '@minesweeper/domain/data.repository'
 import { NeighborsBombsCounter } from '@minesweeper/domain/NeighborsBombsCounter.model'
 
 interface IStartGameProps {
+	data: IDataRepository
 	rows: number
 	columns: number
 	bombs: number
@@ -12,16 +13,17 @@ interface IStartGameProps {
 
 type IBoardResponse = BoardModel
 
-type IStartGameUseCase = (props: IStartGameProps) => IBoardResponse
+type IStartGameUseCase = (props: IStartGameProps) => Promise<IBoardResponse>
 
 /**
  * start game base on initial props
  */
 
-export const startGameUseCase: IStartGameUseCase = ({
+export const startGameUseCase: IStartGameUseCase = async ({
 	bombs: bombsInput,
 	rows,
 	columns,
+	data,
 }) => {
 	if (bombsInput < 1) {
 		throw new Error('bombs must be greater than 0')
@@ -49,12 +51,30 @@ export const startGameUseCase: IStartGameUseCase = ({
 		}
 	}
 
+	const getRandomNumber = (max: number): number =>
+		Math.round(Math.random() * max)
+
+	let bombs: BombModel[] = []
+
+	while (bombs.length < bombsInput) {
+		const newBomb: BombModel = {
+			position: [getRandomNumber(rows - 1), getRandomNumber(columns - 1)],
+		}
+
+		const haveSamePosition = bombs.some(
+			bomb =>
+				bomb.position[0] === newBomb.position[0] &&
+				bomb.position[1] === newBomb.position[1]
+		)
+
+		if (!haveSamePosition) {
+			bombs.push(newBomb)
+		}
+	}
+
 	const neighBorsBombsCounter: NeighborsBombsCounter[] = Array(totalCells)
 
-	let bombs: BombModel[] = Array(bombsInput)
-
-	return {
-		id: '111-222-333',
+	const boardWithoutId: Omit<BoardModel, 'id'> = {
 		cells,
 		bombs_available: bombsInput,
 		bombs,
@@ -63,5 +83,12 @@ export const startGameUseCase: IStartGameUseCase = ({
 		flag_available: bombsInput,
 		flags: [],
 		neighBorsBombsCounter,
+	}
+
+	const { id } = await data.saveBoard(boardWithoutId)
+
+	return {
+		id,
+		...boardWithoutId,
 	}
 }

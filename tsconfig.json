@@ -1,24 +1,17 @@
 {
-	"compilerOptions": {
-		"target": "ES2017",
-		"strict": true,
-		"moduleResolution": "node",
-		"outDir": "public",
-		"baseUrl": ".",
-		"paths": {
-			"@minesweeper/*": [
-				"minesweeper/*"
-			],
-			"@game-board/*": [
-				"game-board/*"
-			]
-		}
-	},
-	"include": [
-		"minesweeper",
-		"game-board"
-	],
-	"files": [
-		"minesweeper/infrastructure/ui/index.ts"
-	],
+  "compilerOptions": {
+    "target": "ES2017",
+    "strict": true,
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "outDir": "public",
+    "baseUrl": ".",
+    "paths": {
+      "@minesweeper/*": ["minesweeper/*"],
+      "@game-board/*": ["game-board/*"]
+    }
+  },
+  "include": ["minesweeper", "game-board"],
+  "files": ["minesweeper/infrastructure/ui/index.ts"]
 }

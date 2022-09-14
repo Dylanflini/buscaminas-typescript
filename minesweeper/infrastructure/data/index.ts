@@ -1,18 +1,19 @@
-import { GameBoardRepository } from '@domain/game-board-repository'
+import { BoardModel } from '@minesweeper/domain/Board.model'
+import { IDataRepository } from '@minesweeper/domain/data.repository'
+import { createId } from '../dependencies/uuid'
 
-export const dataRepository: GameBoardRepository = {
-	saveGameBoard: async () => {
-		return {
-			cells: [
-				{ x: 0, y: 0 },
-				{ x: 1, y: 0 },
-				{ x: 0, y: 1 },
-				{ x: 1, y: 1 },
-			],
-			totalMines: 4,
-			remainingMines: 4,
-			hasWonGame: false,
-			hasLostGame: false,
-		}
+let db: BoardModel
+
+export const dataRepository: IDataRepository = {
+	saveBoard: async board => {
+		const id = createId()
+
+		db = { ...board, id }
+
+		return { id }
+	},
+
+	getBoard: async ({ id }) => {
+		return db
 	},
 }
