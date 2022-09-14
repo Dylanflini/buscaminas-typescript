@@ -1,0 +1,33 @@
+{
+    "root": true,
+    "extends": [
+        "prettier",
+        "eslint:recommended",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:@typescript-eslint/recommended-requiring-type-checking",
+        "plugin:jest/recommended"
+    ],
+    "plugins": [
+        "prettier",
+        "jest",
+        "@typescript-eslint",
+        "import"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "tsconfigRootDir": "./",
+        "project": "./tsconfig.json"
+    },
+    "rules": {
+        "no-duplicate-imports": "error"
+    },
+    "globals": {
+        "window": true,
+        "document": true,
+        "localStorage": true,
+        "FormData": true,
+        "FileReader": true,
+        "Blob": true,
+        "navigator": true
+    }
+}

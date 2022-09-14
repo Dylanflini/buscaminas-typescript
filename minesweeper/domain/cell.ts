@@ -126,43 +126,6 @@ lógica de negocio:
 
 
 
-
-21º3
-
-
-
-243
-1
-
-
-
-
-
-
-
-4
-
-
-
-
-
-
-43
-
-
-
-
-
-
-
-
-
-
-231
-
-231
-
-1
 export class Cell implements ICell {
 	isBomb: boolean
 	#wasMarkedAsBomb: boolean

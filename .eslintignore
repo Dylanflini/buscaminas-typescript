@@ -1,0 +1,47 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+
+# temporary 
+minesweeper/infrastructure/
+
+# config
+jest.config.ts
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+jest_html_reporters.html
+jest-html-reporters-attach/
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+/.vscode
+.DS_Store
+.env
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+.npmrc
+test-report.html
+public/web-viewer
+
+*.snap
+*.ci
+*.json
+*.svg
+*.yml
+*.html
+*.js
