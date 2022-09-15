@@ -1,8 +1,8 @@
 import { BoardModel } from '@minesweeper/domain/Board.model';
-import { BombModel } from '@minesweeper/domain/Bomb.model';
 import { CellModel } from '@minesweeper/domain/Cell.model';
 import { IDataRepository } from '@minesweeper/domain/data.repository';
-import { NeighborsBombsCounter } from '@minesweeper/domain/NeighborsBombsCounter.model';
+import { createBombs } from './createBombs';
+import { createNeighborsCounter } from './createNeighboardsCounter';
 
 export enum ErrorStartGame {
   BOMBS_GREATER_THAN_ZERO = 'bombs must be greater than 0',
@@ -10,6 +10,7 @@ export enum ErrorStartGame {
   COLUMNS_GREATER_THAN_ZERO = 'columns must be greater than 0',
   ROWS_AND_COLUMNS_GREATER_THAN_ONE = 'rows and columns must be greater than 1',
   BOMBS_GREATER_THAN_TOTAL_CELLS = 'bombs must be less than total cells',
+  DB_ERROR = 'error try saving board data',
 }
 
 interface IStartGameProps {
@@ -19,7 +20,7 @@ interface IStartGameProps {
   bombs: number;
 }
 
-type IBoardResponse = BoardModel;
+type IBoardResponse = Omit<BoardModel, 'bombs' | 'neighBorsBombsCounter'>;
 
 type IStartGameUseCase = (props: IStartGameProps) => Promise<IBoardResponse>;
 
@@ -63,25 +64,7 @@ export const startGameUseCase: IStartGameUseCase = async ({
     }
   }
 
-  const getRandomNumber = (max: number): number => Math.round(Math.random() * max);
-
-  const bombs: BombModel[] = [];
-
-  while (bombs.length < bombsInput) {
-    const newBomb: BombModel = {
-      position: [getRandomNumber(rows - 1), getRandomNumber(columns - 1)],
-    };
-
-    const haveSamePosition = bombs.some(
-      bomb => bomb.position[0] === newBomb.position[0] && bomb.position[1] === newBomb.position[1],
-    );
-
-    if (!haveSamePosition) {
-      bombs.push(newBomb);
-    }
-  }
-
-  const neighBorsBombsCounter: NeighborsBombsCounter[] = [];
+  const bombs = createBombs({ rows, columns, bombsInput });
 
   const boardWithoutId: Omit<BoardModel, 'id'> = {
     cells,
@@ -91,13 +74,20 @@ export const startGameUseCase: IStartGameUseCase = async ({
     columns,
     flag_available: bombsInput,
     flags: [],
-    neighBorsBombsCounter,
+    neighBorsBombsCounter: createNeighborsCounter({ cells, bombs }),
   };
 
-  const { id } = await data.saveBoard(boardWithoutId);
+  try {
+    const { id } = await data.createBoard(boardWithoutId);
 
-  return {
-    id,
-    ...boardWithoutId,
-  };
+    const { bombs, neighBorsBombsCounter, ...rest } = boardWithoutId;
+
+    return {
+      ...rest,
+      id,
+    };
+  } catch (error) {
+    console.error(error);
+    throw Error(ErrorStartGame.DB_ERROR);
+  }
 };

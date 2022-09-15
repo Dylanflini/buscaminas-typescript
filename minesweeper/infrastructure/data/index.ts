@@ -5,7 +5,7 @@ import { createId } from '../dependencies/uuid';
 let db: BoardModel;
 
 export const dataRepository: IDataRepository = {
-  saveBoard: async board => {
+  createBoard: async board => {
     const id = createId();
 
     db = { ...board, id };
