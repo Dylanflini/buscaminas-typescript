@@ -12,6 +12,24 @@ describe("start game", () => {
       ).rejects.toThrowError(ErrorStartGame.ROWS_AND_COLUMNS_GREATER_THAN_ONE);
     });
 
+    it("should throw error if props columns or rows are less than 1", async () => {
+      await expect(
+        startGameUseCase({ data, bombs: 1, columns: 4, rows: 0 })
+      ).rejects.toThrowError(ErrorStartGame.ROWS_GREATER_THAN_ZERO);
+
+      await expect(
+        startGameUseCase({ data, bombs: 1, columns: 4, rows: -1 })
+      ).rejects.toThrowError(ErrorStartGame.ROWS_GREATER_THAN_ZERO);
+
+      await expect(
+        startGameUseCase({ data, bombs: 1, columns: 0, rows: 3 })
+      ).rejects.toThrowError(ErrorStartGame.COLUMNS_GREATER_THAN_ZERO);
+
+      await expect(
+        startGameUseCase({ data, bombs: 1, columns: -1, rows: 3 })
+      ).rejects.toThrowError(ErrorStartGame.COLUMNS_GREATER_THAN_ZERO);
+    });
+
     it("should throw error if props not contain bombs", async () => {
       const props = { data, bombs: 0, rows: 2, columns: 2 };
 
