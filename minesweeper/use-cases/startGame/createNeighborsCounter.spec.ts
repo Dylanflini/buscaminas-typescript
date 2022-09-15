@@ -3,7 +3,7 @@ import { CellModel } from '@minesweeper/domain/Cell.model';
 import { createNeighborsCounter } from './createNeighborsCounter';
 
 describe('create neighbors', () => {
-  it('should return 1 bomb', () => {
+  it('should return correct neighbor counter if board have 1', () => {
     const cells: CellModel[] = [
       { position: [0, 0], exposed: false },
       { position: [1, 0], exposed: false },
@@ -27,7 +27,7 @@ describe('create neighbors', () => {
     ]);
   });
 
-  it('should return 2 bombs', () => {
+  it('should return correct neighbors counter if board have 2 bombs', () => {
     const cells: CellModel[] = [
       { position: [0, 0], exposed: false },
       { position: [1, 0], exposed: false },
@@ -51,7 +51,7 @@ describe('create neighbors', () => {
     ]);
   });
 
-  it('should return 3 bombs', () => {
+  it('should return correct neighbors counter if board have 3 bombs', () => {
     const cells: CellModel[] = [
       { position: [0, 0], exposed: false },
       { position: [1, 0], exposed: false },
@@ -75,7 +75,7 @@ describe('create neighbors', () => {
     ]);
   });
 
-  it('should return correct bombs', () => {
+  it('should return correct neighbors counter if board have 2 bombs (v2)', () => {
     const cells: CellModel[] = [
       { position: [0, 0], exposed: false },
       { position: [1, 0], exposed: false },
@@ -94,6 +94,4 @@ describe('create neighbors', () => {
       { position: [1, 1], quantity: 3 },
     ]);
   });
-
-  it.todo('should all neighbors have value between 0 to 8');
 });
