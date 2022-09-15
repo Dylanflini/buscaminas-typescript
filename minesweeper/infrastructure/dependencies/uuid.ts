@@ -1,3 +1,3 @@
-import { v4 } from 'uuid'
+import { v4 } from 'uuid';
 
-export const createId = () => v4()
+export const createId = () => v4();

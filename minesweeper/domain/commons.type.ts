@@ -2,12 +2,12 @@
  * Utility Types
  */
 
-export type TPosition = [number, number]
+export type TPosition = [number, number];
 
 export interface IPosition {
-	position: TPosition
+  position: TPosition;
 }
 
 export type IBoardId = {
-	id: string
-}
+  id: string;
+};

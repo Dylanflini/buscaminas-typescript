@@ -1,7 +1,7 @@
-import { BoardModel } from './Board.model'
-import { IBoardId } from './commons.type'
+import { BoardModel } from './Board.model';
+import { IBoardId } from './commons.type';
 
 export interface IDataRepository {
-	saveBoard: (props: Omit<BoardModel, 'id'>) => Promise<IBoardId>
-	getBoard: (props: IBoardId) => Promise<BoardModel>
+  saveBoard: (props: Omit<BoardModel, 'id'>) => Promise<IBoardId>;
+  getBoard: (props: IBoardId) => Promise<BoardModel>;
 }
