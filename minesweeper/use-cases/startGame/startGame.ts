@@ -7,6 +7,7 @@ import { NeighborsBombsCounter } from "@minesweeper/domain/NeighborsBombsCounter
 export enum ErrorStartGame {
   BOMBS_GREATER_THAN_ZERO = "bombs must be greater than 0",
   ROWS_AND_COLUMNS_GREATER_THAN_ONE = "rows and columns must be greater than 1",
+  BOMBS_GREATER_THAN_TOTAL_CELLS = "bombs must be less than total cells",
 }
 
 interface IStartGameProps {
@@ -33,11 +34,16 @@ export const startGameUseCase: IStartGameUseCase = async ({
   if (bombsInput < 1) {
     throw Error(ErrorStartGame.BOMBS_GREATER_THAN_ZERO);
   }
+
   if (rows < 2 && columns < 2) {
     throw new Error(ErrorStartGame.ROWS_AND_COLUMNS_GREATER_THAN_ONE);
   }
 
   const totalCells = columns * rows;
+
+  if (bombsInput >= totalCells) {
+    throw Error(ErrorStartGame.BOMBS_GREATER_THAN_TOTAL_CELLS);
+  }
 
   const cells: CellModel[] = [];
 

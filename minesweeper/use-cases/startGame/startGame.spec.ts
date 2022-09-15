@@ -20,9 +20,15 @@ describe("start game", () => {
       );
     });
 
-    it.todo(
-      "should throw error if bombs are greater or equal than total cells"
-    );
+    it("should throw error if bombs are greater or equal than total cells", async () => {
+      await expect(
+        startGameUseCase({ data, bombs: 4, rows: 2, columns: 2 })
+      ).rejects.toThrowError(ErrorStartGame.BOMBS_GREATER_THAN_TOTAL_CELLS);
+
+      await expect(
+        startGameUseCase({ data, bombs: 5, rows: 2, columns: 2 })
+      ).rejects.toThrowError(ErrorStartGame.BOMBS_GREATER_THAN_TOTAL_CELLS);
+    });
   });
 
   it("should return initial board", async () => {
