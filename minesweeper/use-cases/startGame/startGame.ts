@@ -2,7 +2,7 @@ import { BoardModel } from '@minesweeper/domain/Board.model';
 import { CellModel } from '@minesweeper/domain/Cell.model';
 import { IDataRepository } from '@minesweeper/domain/data.repository';
 import { createBombs } from './createBombs';
-import { createNeighborsCounter } from './createNeighboardsCounter';
+import { createNeighborsCounter } from './createNeighborsCounter';
 
 export enum ErrorStartGame {
   BOMBS_GREATER_THAN_ZERO = 'bombs must be greater than 0',

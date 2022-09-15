@@ -1,6 +1,6 @@
 import { BombModel } from '@minesweeper/domain/Bomb.model';
 import { CellModel } from '@minesweeper/domain/Cell.model';
-import { createNeighborsCounter } from './createNeighboardsCounter';
+import { createNeighborsCounter } from './createNeighborsCounter';
 
 describe('create neighbors', () => {
   it('should return 1 bomb', () => {
