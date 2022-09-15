@@ -1,3 +1,3 @@
-import { IPosition } from "./commons.type";
+import { IPosition } from './commons.type';
 
-export type BombModel = IPosition
+export type BombModel = IPosition;

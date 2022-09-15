@@ -8,7 +8,6 @@
 // - se gana el juego si las celdas marcadas como bomba son las mismas que las bombas ó
 // si las celdas que quedan sin marcar son las mismas que las bombas.
 
-
 // - si se marcar una celda se debe disminuir las bombas que quedan
 // - las celdas marcadas como bomba no pueden ser mayor a la cantidad de bombas totales
 

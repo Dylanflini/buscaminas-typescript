@@ -1,3 +1,3 @@
-import { IPosition } from "./commons.type";
+import { IPosition } from './commons.type';
 
-export type FlagModel = IPosition
+export type FlagModel = IPosition;

@@ -1,7 +1,7 @@
-import { BombModel } from "./Bomb.model";
-import { CellModel } from "./Cell.model";
-import { FlagModel } from "./Flag.model";
-import { NeighborsBombsCounter } from "./NeighborsBombsCounter.model";
+import { BombModel } from './Bomb.model';
+import { CellModel } from './Cell.model';
+import { FlagModel } from './Flag.model';
+import { NeighborsBombsCounter } from './NeighborsBombsCounter.model';
 
 export interface BoardModel {
   id: string;
