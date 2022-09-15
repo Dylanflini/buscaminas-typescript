@@ -12,6 +12,5 @@
       "@game-board/*": ["game-board/*"]
     }
   },
-  "include": ["minesweeper", "game-board"],
-  "files": ["minesweeper/infrastructure/ui/index.ts"]
+  "include": ["minesweeper", "game-board"]
 }

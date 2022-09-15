@@ -1,238 +1,237 @@
-import { Cell, CellInBoard, ICell, ICellInBoard } from './cell'
+// import { Cell, CellInBoard, ICell, ICellInBoard } from './cell'
 
-/*
-lógica de negocio:
+// /*
+// lógica de negocio:
 
-- si se expone una bomba, todas las bombas del tablero deben ser expuestas y se pierde el juego
+// - si se expone una bomba, todas las bombas del tablero deben ser expuestas y se pierde el juego
 
-- se gana el juego si las celdas marcadas como bomba son las mismas que las bombas ó
-si las celdas que quedan sin marcar son las mismas que las bombas.
+// - se gana el juego si las celdas marcadas como bomba son las mismas que las bombas ó
+// si las celdas que quedan sin marcar son las mismas que las bombas.
 
+// - si se marcar una celda se debe disminuir las bombas que quedan
+// - las celdas marcadas como bomba no pueden ser mayor a la cantidad de bombas totales
 
-- si se marcar una celda se debe disminuir las bombas que quedan
-- las celdas marcadas como bomba no pueden ser mayor a la cantidad de bombas totales
+// */
 
-*/
-
-export interface InitialData {
-	rows: number
-	columns: number
-	totalBombs: number
-}
-
-export interface BoardGameI {
-	cells: { x: number; y: number }[]
-	totalMines: number
-	remainingMines: number
-	hasWonGame: boolean
-	hasLostGame: boolean
-}
-
-// const markCellAsBomb = (board: IGameBoard, cell: ICellInBoard) => {
-// 	if(board.getRemainingBoms()){
-
-// 	}
+// export interface InitialData {
+// 	rows: number
+// 	columns: number
+// 	totalBombs: number
 // }
 
-export class GameBoard implements IGameBoard {
-	hasLostGame = false
-	hasWonGame = false
-	rows: number
-	columns: number
-	remainingBoms: number
-	totalBombs: number
-	cells: ICellInBoard[]
-	#bombs: boolean[]
+// export interface BoardGameI {
+// 	cells: { x: number; y: number }[]
+// 	totalMines: number
+// 	remainingMines: number
+// 	hasWonGame: boolean
+// 	hasLostGame: boolean
+// }
 
-	markCellAsBomb = (cell: ICellInBoard) => {
-		// const cell = this.getCell(id)
-		// if (!cell || this.getRemainingBoms() <= 0) return
-		if (this.getRemainingBoms() <= 0) return
+// // const markCellAsBomb = (board: IGameBoard, cell: ICellInBoard) => {
+// // 	if(board.getRemainingBoms()){
 
-		cell.markAsBomb()
+// // 	}
+// // }
 
-		this.decrementRemainingBombs()
+// export class GameBoard implements IGameBoard {
+// 	hasLostGame = false
+// 	hasWonGame = false
+// 	rows: number
+// 	columns: number
+// 	remainingBoms: number
+// 	totalBombs: number
+// 	cells: ICellInBoard[]
+// 	#bombs: boolean[]
 
-		if (this.isWonGame()) {
-			// this.table.winGame() // revisar
-			this.cells.forEach(cell => {
-				// !cell.isExposed() && !cell.isBomb && cell.expose()
-				cell.expose()
-			})
-			// this.#handleWin()
-		}
-	}
+// 	markCellAsBomb = (cell: ICellInBoard) => {
+// 		// const cell = this.getCell(id)
+// 		// if (!cell || this.getRemainingBoms() <= 0) return
+// 		if (this.getRemainingBoms() <= 0) return
 
-	// - si se desmarcar una celda se debe aumentar las bombas que quedan
-	// - las celdas marcadas como bomba no pueden ser menor a cero
-	unCheckAsBomb = (cell: ICellInBoard) => {
-		cell?.unCheckAsBomb()
+// 		cell.markAsBomb()
 
-		if (this.remainingBoms >= this.totalBombs) return
+// 		this.decrementRemainingBombs()
 
-		this.incrementRemainingBombs()
-	}
+// 		if (this.isWonGame()) {
+// 			// this.table.winGame() // revisar
+// 			this.cells.forEach(cell => {
+// 				// !cell.isExposed() && !cell.isBomb && cell.expose()
+// 				cell.expose()
+// 			})
+// 			// this.#handleWin()
+// 		}
+// 	}
 
-	exposeCell = (cell: ICellInBoard) => {
-		const z: ICellInBoard[] = []
+// 	// - si se desmarcar una celda se debe aumentar las bombas que quedan
+// 	// - las celdas marcadas como bomba no pueden ser menor a cero
+// 	unCheckAsBomb = (cell: ICellInBoard) => {
+// 		cell?.unCheckAsBomb()
 
-		const alo = (id: number) => {
-			const cell = this.getCell(id)
-			if (!cell) return
-			if (
-				cell.getTotalBombsAround() === 0 &&
-				!cell.isExposed() &&
-				!cell.isMarkAsBomb()
-			) {
-				cell.expose()
-				console.log(cell.getId())
-				z.push(cell)
+// 		if (this.remainingBoms >= this.totalBombs) return
 
-				cell.getIdsOfCellsAround()?.forEach(id => {
-					alo(id)
-				})
-			}
+// 		this.incrementRemainingBombs()
+// 	}
 
-			if (!cell.isMarkAsBomb() && !cell.isExposed()) {
-				cell.expose()
-				console.log(cell.getId())
-				z.push(cell)
-			}
-		}
+// 	exposeCell = (cell: ICellInBoard) => {
+// 		const z: ICellInBoard[] = []
 
-		alo(cell.getId())
+// 		const alo = (id: number) => {
+// 			const cell = this.getCell(id)
+// 			if (!cell) return
+// 			if (
+// 				cell.getTotalBombsAround() === 0 &&
+// 				!cell.isExposed() &&
+// 				!cell.isMarkAsBomb()
+// 			) {
+// 				cell.expose()
+// 				console.log(cell.getId())
+// 				z.push(cell)
 
-		cell.expose()
+// 				cell.getIdsOfCellsAround()?.forEach(id => {
+// 					alo(id)
+// 				})
+// 			}
 
-		if (cell.isBomb && !cell.isMarkAsBomb()) {
-			// this.#handleLose()
-			return this.getCells().filter(cell => {
-				cell.isBomb && cell.expose()
-				return cell.isBomb
-			})
-		}
+// 			if (!cell.isMarkAsBomb() && !cell.isExposed()) {
+// 				cell.expose()
+// 				console.log(cell.getId())
+// 				z.push(cell)
+// 			}
+// 		}
 
-		return z
-	}
+// 		alo(cell.getId())
 
-	constructor({
-		rows,
-		columns,
-		totalBombs,
-	}: {
-		rows: number
-		columns: number
-		totalBombs: number
-	}) {
-		this.rows = rows
-		this.columns = columns
-		this.totalBombs = totalBombs
+// 		cell.expose()
 
-		this.remainingBoms = totalBombs
-		this.#bombs = Array(rows * columns).fill(false)
+// 		if (cell.isBomb && !cell.isMarkAsBomb()) {
+// 			// this.#handleLose()
+// 			return this.getCells().filter(cell => {
+// 				cell.isBomb && cell.expose()
+// 				return cell.isBomb
+// 			})
+// 		}
 
-		this.setBombs()
+// 		return z
+// 	}
 
-		let x = -1
-		let y = 0
-		const cells = this.#bombs.map((isBomb, index) => {
-			x++
-			if (x >= columns) {
-				y++
-				x = 0
-			}
-			return new Cell(x, y, index, isBomb)
-		})
+// 	constructor({
+// 		rows,
+// 		columns,
+// 		totalBombs,
+// 	}: {
+// 		rows: number
+// 		columns: number
+// 		totalBombs: number
+// 	}) {
+// 		this.rows = rows
+// 		this.columns = columns
+// 		this.totalBombs = totalBombs
 
-		this.cells = cells.map(cell => {
-			return new CellInBoard(
-				cell,
-				this.getCellsAround(cells, cell).map(c => c.getId()),
-				this.getTotalBombsAround(cells, cell)
-			)
-		})
-	}
+// 		this.remainingBoms = totalBombs
+// 		this.#bombs = Array(rows * columns).fill(false)
 
-	setBombs = (): void => {
-		if (this.totalBombs === this.#bombs.filter(bomb => bomb).length) {
-			return
-		}
-		const random = getRandomValue(this.rows * this.columns)
-		if (!this.#bombs[random]) {
-			this.#bombs[random] = true
-		}
-		return this.setBombs()
-	}
+// 		this.setBombs()
 
-	getCells = () => this.cells
+// 		let x = -1
+// 		let y = 0
+// 		const cells = this.#bombs.map((isBomb, index) => {
+// 			x++
+// 			if (x >= columns) {
+// 				y++
+// 				x = 0
+// 			}
+// 			return new Cell(x, y, index, isBomb)
+// 		})
 
-	getRemainingBoms = () => this.remainingBoms
+// 		this.cells = cells.map(cell => {
+// 			return new CellInBoard(
+// 				cell,
+// 				this.getCellsAround(cells, cell).map(c => c.getId()),
+// 				this.getTotalBombsAround(cells, cell)
+// 			)
+// 		})
+// 	}
 
-	getCell = (id: number): ICellInBoard | undefined => {
-		// console.log(this.cells[id])
-		return this.cells[id]
-	}
+// 	setBombs = (): void => {
+// 		if (this.totalBombs === this.#bombs.filter(bomb => bomb).length) {
+// 			return
+// 		}
+// 		const random = getRandomValue(this.rows * this.columns)
+// 		if (!this.#bombs[random]) {
+// 			this.#bombs[random] = true
+// 		}
+// 		return this.setBombs()
+// 	}
 
-	getCellsAround = (cells: ICell[], cell: ICell): ICell[] => {
-		const { x, y } = cell.getPosition()
+// 	getCells = () => this.cells
 
-		const filterCellsAround = (cell: ICell): boolean => {
-			const { x: cellX, y: cellY } = cell.getPosition()
-			return (
-				cellX >= x - 1 &&
-				cellX <= x + 1 &&
-				cellY >= y - 1 &&
-				cellY <= y + 1 &&
-				(cellX !== x || cellY !== y)
-			)
-		}
+// 	getRemainingBoms = () => this.remainingBoms
 
-		return cells.filter(filterCellsAround)
+// 	getCell = (id: number): ICellInBoard | undefined => {
+// 		// console.log(this.cells[id])
+// 		return this.cells[id]
+// 	}
 
-		// return {
-		// cellsAround,
-		// positions: cellsAround.map(a => ({ x: a.position.x, y: a.position.y })),
-		// positions: cellsAround.map(a => a.index),
-		// }
-	}
+// 	getCellsAround = (cells: ICell[], cell: ICell): ICell[] => {
+// 		const { x, y } = cell.getPosition()
 
-	getTotalBombsAround = (cells: ICell[], cell: ICell) => {
-		const cellsAround = this.getCellsAround(cells, cell)
-		return cellsAround.filter(cell => cell.isBomb).length
-	}
+// 		const filterCellsAround = (cell: ICell): boolean => {
+// 			const { x: cellX, y: cellY } = cell.getPosition()
+// 			return (
+// 				cellX >= x - 1 &&
+// 				cellX <= x + 1 &&
+// 				cellY >= y - 1 &&
+// 				cellY <= y + 1 &&
+// 				(cellX !== x || cellY !== y)
+// 			)
+// 		}
 
-	decrementRemainingBombs = () => this.remainingBoms--
-	incrementRemainingBombs = () => this.remainingBoms++
+// 		return cells.filter(filterCellsAround)
 
-	isWonGame = () =>
-		this.getRemainingBoms() === 0 &&
-		this.getCells().every(cell => cell.isBomb === cell.isMarkAsBomb())
+// 		// return {
+// 		// cellsAround,
+// 		// positions: cellsAround.map(a => ({ x: a.position.x, y: a.position.y })),
+// 		// positions: cellsAround.map(a => a.index),
+// 		// }
+// 	}
 
-	// winGame  () => void
-}
+// 	getTotalBombsAround = (cells: ICell[], cell: ICell) => {
+// 		const cellsAround = this.getCellsAround(cells, cell)
+// 		return cellsAround.filter(cell => cell.isBomb).length
+// 	}
 
-function getRandomValue(maxValue: number) {
-	return Math.floor(Math.random() * maxValue)
-}
+// 	decrementRemainingBombs = () => this.remainingBoms--
+// 	incrementRemainingBombs = () => this.remainingBoms++
 
-export interface IGameBoard {
-	// rows: number
-	// columns: number
-	// remainingBoms: number
-	// totalBombs: number
-	// cells: ICellInBoard[]
+// 	isWonGame = () =>
+// 		this.getRemainingBoms() === 0 &&
+// 		this.getCells().every(cell => cell.isBomb === cell.isMarkAsBomb())
 
-	isWonGame: () => boolean
+// 	// winGame  () => void
+// }
 
-	getRemainingBoms: () => number
+// function getRandomValue(maxValue: number) {
+// 	return Math.floor(Math.random() * maxValue)
+// }
 
-	getCell: (id: number) => ICellInBoard | undefined
-	getCells: () => ICellInBoard[]
+// export interface IGameBoard {
+// 	// rows: number
+// 	// columns: number
+// 	// remainingBoms: number
+// 	// totalBombs: number
+// 	// cells: ICellInBoard[]
 
-	incrementRemainingBombs: () => void
-	decrementRemainingBombs: () => void
+// 	isWonGame: () => boolean
 
-	markCellAsBomb: (cell: ICellInBoard) => void
-	unCheckAsBomb: (cell: ICellInBoard) => void
-	exposeCell: (cell: ICellInBoard) => ICellInBoard[]
-}
+// 	getRemainingBoms: () => number
+
+// 	getCell: (id: number) => ICellInBoard | undefined
+// 	getCells: () => ICellInBoard[]
+
+// 	incrementRemainingBombs: () => void
+// 	decrementRemainingBombs: () => void
+
+// 	markCellAsBomb: (cell: ICellInBoard) => void
+// 	unCheckAsBomb: (cell: ICellInBoard) => void
+// 	exposeCell: (cell: ICellInBoard) => ICellInBoard[]
+// }
