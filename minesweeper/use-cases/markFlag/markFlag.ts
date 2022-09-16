@@ -1,30 +1,26 @@
-import { BoardModel } from "@minesweeper/domain/Board.model";
-import { IPosition } from "@minesweeper/domain/commons.type";
-import {
-  makeValidations,
-  MarkFlagUCError,
-  GeneralError,
-} from "./markFlag.validations";
+import { BoardModel } from '@minesweeper/domain/Board.model';
+import { IBoardId, IPosition } from '@minesweeper/domain/commons.type';
 
-export type IMarkFlagProps = IPosition;
+import { dataRepository } from '@minesweeper/infrastructure/data';
+
+import { makeValidations, MarkFlagUCError, GeneralError } from './markFlag.validations';
+
+export interface WithBoardId {
+  // export to commons
+  boardId: IBoardId;
+}
+
+export interface IMarkFlagProps extends IPosition, WithBoardId {}
+
 export type IMarkFlagResponse = BoardModel;
-export type IMarkFlagUseCase = (props: IMarkFlagProps) => IMarkFlagResponse;
+export type IMarkFlagUseCase = (props: IMarkFlagProps) => Promise<IMarkFlagResponse>;
 
 /**
  * Mark flag in board
  */
-export const markFlagUseCase: IMarkFlagUseCase = (props) => {
-  const board: IMarkFlagResponse = {
-    id: "111-222-333",
-    flag_available: 10,
-    bombs_available: 10,
-    rows: 10,
-    columns: 10,
-    bombs: [{ position: [0, 0] }],
-    cells: [{ position: [0, 0], exposed: false }],
-    neighBorsBombsCounter: [{ position: [0, 0], quantity: 5 }],
-    flags: [],
-  };
+export const markFlagUseCase: IMarkFlagUseCase = async props => {
+  const { boardId, ...positionProps } = props;
+  const board = await dataRepository.getBoard(boardId);
 
   const {
     ALREADY_A_FLAG,
@@ -40,9 +36,11 @@ export const markFlagUseCase: IMarkFlagUseCase = (props) => {
   if (OUTSIDE_BOARD) throw Error(MarkFlagUCError.OUTSIDE_BOARD);
   if (NOT_NATURAL_NUMBER) throw Error(GeneralError.NOT_NATURAL_NUMBER);
 
-  board.flags = [props];
+  board.flags = [positionProps];
+
+  await dataRepository.saveBoard(board);
 
   return board;
 };
 
-export * from "./markFlag.validations";
+export * from './markFlag.validations';
