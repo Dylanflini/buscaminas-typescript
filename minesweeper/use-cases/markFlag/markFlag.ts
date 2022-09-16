@@ -36,7 +36,8 @@ export const markFlagUseCase: IMarkFlagUseCase = async props => {
   if (OUTSIDE_BOARD) throw Error(MarkFlagUCError.OUTSIDE_BOARD);
   if (NOT_NATURAL_NUMBER) throw Error(GeneralError.NOT_NATURAL_NUMBER);
 
-  board.flags = [positionProps];
+  board.flags.push(positionProps); // not tested enough
+  board.flag_available = board.flag_available - 1;
 
   await dataRepository.saveBoard(board);
 
