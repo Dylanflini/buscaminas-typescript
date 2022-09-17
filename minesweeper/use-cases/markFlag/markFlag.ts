@@ -1,24 +1,17 @@
-import { BoardModel } from '@minesweeper/domain/Board.model';
-import { IBoardId, IPosition } from '@minesweeper/domain/commons.type';
-
+import { BoardModel } from '@minesweeper/domain/models';
+import { IPosition, WithBoardId } from '@minesweeper/domain/commons.type';
 import { IDataRepository } from '@minesweeper/domain/data.repository';
 
 import { makeValidations, MarkFlagUCError, GeneralError } from './markFlag.validations';
 
-export interface WithBoardId {
-  // export to commons
-  boardId: IBoardId;
-}
-
 export interface IMarkFlagProps extends IPosition, WithBoardId {
-   dataRepository: IDataRepository;
+  dataRepository: IDataRepository;
 }
-
 export type IMarkFlagResponse = BoardModel;
 export type IMarkFlagUseCase = (props: IMarkFlagProps) => Promise<IMarkFlagResponse>;
 
 /**
- * Mark flag in board
+ * [Use Case] Mark flag in a cell in the board in a specific position to signal that there should be a bomb there.
  */
 export const markFlagUseCase: IMarkFlagUseCase = async props => {
   const { boardId, dataRepository, ...positionProps } = props;
@@ -39,7 +32,7 @@ export const markFlagUseCase: IMarkFlagUseCase = async props => {
   if (NOT_NATURAL_NUMBER) throw Error(GeneralError.NOT_NATURAL_NUMBER);
 
   board.flags.push(positionProps); // not tested enough
-  board.flag_available = board.flag_available - 1;
+  board.flags_available = board.flags_available - 1;
 
   await dataRepository.saveBoard(board);
 

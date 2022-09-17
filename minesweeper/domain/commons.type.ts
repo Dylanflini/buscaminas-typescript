@@ -11,3 +11,7 @@ export interface IPosition {
 export type IBoardId = {
   id: string;
 };
+
+export interface WithBoardId {
+  boardId: IBoardId;
+}

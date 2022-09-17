@@ -1,12 +1,12 @@
-import { BoardModel } from '@minesweeper/domain/Board.model';
+import { BoardModel } from '@minesweeper/domain/models';
 import { IDataRepository } from '@minesweeper/domain/data.repository';
-// import { createId } from '@minesweeper/infrastructure/dependencies/uuid';
+import { createId } from '@minesweeper/infrastructure/dependencies/uuid';
 
 let db: BoardModel;
 
 export const dataRepository: IDataRepository = {
   saveBoard: async board => {
-    const id = '111'; // createId(); error in jest test
+    const id = createId();
 
     db = { ...board, id };
 

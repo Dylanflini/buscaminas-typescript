@@ -1,8 +1,5 @@
-import { BoardModel } from '@minesweeper/domain/Board.model';
-import { CellModel } from '@minesweeper/domain/Cell.model';
-import { FlagModel } from '@minesweeper/domain/Flag.model';
+import { BoardModel, CellModel, FlagModel } from '@minesweeper/domain/models';
 import { dataRepository } from '@minesweeper/infrastructure/data';
-
 import { markFlagUseCase, MarkFlagUCError, GeneralError } from './markFlag';
 
 jest.mock('@minesweeper/infrastructure/data');
@@ -19,7 +16,7 @@ describe('markFlagUseCase', () => {
 
   const boardMocked: BoardModel = {
     id: '111-222-333',
-    flag_available: flagAvailableMocked,
+    flags_available: flagAvailableMocked,
     bombs_available: 10,
     rows: 10,
     columns: 10,
@@ -39,10 +36,18 @@ describe('markFlagUseCase', () => {
     (dataRepository.getBoard as jest.Mock).mockImplementation(() => boardMocked);
   });
 
+  /**
+   * Test commons
+   */
+  const commonProps = {
+    boardId,
+    dataRepository,
+  };
+
   it('should mark a flag in the board', async () => {
-    const { flags, flag_available } = await markFlagUseCase({ position: [5, 7], boardId });
+    const { flags, flags_available } = await markFlagUseCase({ position: [5, 7], ...commonProps });
     expect(flags[0].position).toStrictEqual([5, 7]);
-    expect(flag_available).toBe(flagAvailableMocked - 1);
+    expect(flags_available).toBe(flagAvailableMocked - 1);
 
     flagAvailableMocked;
   });
@@ -50,21 +55,21 @@ describe('markFlagUseCase', () => {
     const inside = 7;
     const outside = 20;
 
-    await expect(markFlagUseCase({ position: [inside, inside], boardId })).resolves.toEqual(
+    await expect(markFlagUseCase({ position: [inside, inside], ...commonProps })).resolves.toEqual(
       expect.objectContaining({
         flags: expect.arrayContaining<FlagModel>([getPosition(inside, inside)]) as void,
       }),
     );
 
-    await expect(markFlagUseCase({ position: [outside, inside], boardId })).rejects.toEqual(
+    await expect(markFlagUseCase({ position: [outside, inside], ...commonProps })).rejects.toEqual(
       expect.objectContaining({ message: MarkFlagUCError.OUTSIDE_BOARD }),
     );
 
-    await expect(markFlagUseCase({ position: [inside, outside], boardId })).rejects.toEqual(
+    await expect(markFlagUseCase({ position: [inside, outside], ...commonProps })).rejects.toEqual(
       expect.objectContaining({ message: MarkFlagUCError.OUTSIDE_BOARD }),
     );
 
-    await expect(markFlagUseCase({ position: [outside, outside], boardId })).rejects.toEqual(
+    await expect(markFlagUseCase({ position: [outside, outside], ...commonProps })).rejects.toEqual(
       expect.objectContaining({ message: MarkFlagUCError.OUTSIDE_BOARD }),
     );
   });
@@ -75,50 +80,52 @@ describe('markFlagUseCase', () => {
     const zero = 0;
     const decimal = 2.5;
 
-    await expect(markFlagUseCase({ position: [positive, positive], boardId })).resolves.toEqual(
+    await expect(
+      markFlagUseCase({ position: [positive, positive], ...commonProps }),
+    ).resolves.toEqual(
       expect.objectContaining({
         flags: expect.arrayContaining<FlagModel>([getPosition(positive, positive)]) as void,
       }),
     );
 
-    await expect(markFlagUseCase({ position: [positive, zero], boardId })).resolves.toEqual(
+    await expect(markFlagUseCase({ position: [positive, zero], ...commonProps })).resolves.toEqual(
       expect.objectContaining({
         flags: expect.arrayContaining<FlagModel>([getPosition(positive, zero)]) as void,
       }),
     );
 
-    await expect(markFlagUseCase({ position: [negative, positive], boardId })).rejects.toEqual(
-      expect.objectContaining({ message: GeneralError.NOT_NATURAL_NUMBER }),
-    );
+    await expect(
+      markFlagUseCase({ position: [negative, positive], ...commonProps }),
+    ).rejects.toEqual(expect.objectContaining({ message: GeneralError.NOT_NATURAL_NUMBER }));
 
-    await expect(markFlagUseCase({ position: [positive, negative], boardId })).rejects.toEqual(
-      expect.objectContaining({ message: GeneralError.NOT_NATURAL_NUMBER }),
-    );
+    await expect(
+      markFlagUseCase({ position: [positive, negative], ...commonProps }),
+    ).rejects.toEqual(expect.objectContaining({ message: GeneralError.NOT_NATURAL_NUMBER }));
 
-    await expect(markFlagUseCase({ position: [positive, decimal], boardId })).rejects.toEqual(
-      expect.objectContaining({ message: GeneralError.NOT_NATURAL_NUMBER }),
-    );
+    await expect(
+      markFlagUseCase({ position: [positive, decimal], ...commonProps }),
+    ).rejects.toEqual(expect.objectContaining({ message: GeneralError.NOT_NATURAL_NUMBER }));
 
-    await expect(markFlagUseCase({ position: [negative, negative], boardId })).rejects.toEqual(
-      expect.objectContaining({ message: GeneralError.NOT_NATURAL_NUMBER }),
-    );
+    await expect(
+      markFlagUseCase({ position: [negative, negative], ...commonProps }),
+    ).rejects.toEqual(expect.objectContaining({ message: GeneralError.NOT_NATURAL_NUMBER }));
   });
   it('should not add a flag where there is already a flag', async () => {
     const x = 2;
     const y = 4;
 
-    await expect(markFlagUseCase({ position: [x, y], boardId })).resolves.toEqual(
+    await expect(markFlagUseCase({ position: [x, y], ...commonProps })).resolves.toEqual(
       expect.objectContaining({
         flags: expect.arrayContaining<FlagModel>([getPosition(x, y)]) as void,
       }),
     );
 
-    await expect(markFlagUseCase({ position: [x, y], boardId })).rejects.toEqual(
+    await expect(markFlagUseCase({ position: [x, y], ...commonProps })).rejects.toEqual(
       expect.objectContaining({ message: MarkFlagUCError.ALREADY_A_FLAG }),
     );
   });
   it('should not add a flag when there is no flag available', async () => {
-    await expect(markFlagUseCase({ position: [1, 2], boardId })).resolves.toEqual(
+    await expect(markFlagUseCase({ position: [1, 2], ...commonProps })).resolves.toEqual(
       expect.objectContaining({
         flags: expect.arrayContaining<FlagModel>([getPosition(1, 2)]) as void,
       }),
@@ -126,10 +133,10 @@ describe('markFlagUseCase', () => {
 
     (dataRepository.getBoard as jest.Mock).mockImplementationOnce(() => ({
       ...boardMocked,
-      flag_available: 0,
+      flags_available: 0,
     }));
 
-    await expect(markFlagUseCase({ position: [3, 4], boardId })).rejects.toEqual(
+    await expect(markFlagUseCase({ position: [3, 4], ...commonProps })).rejects.toEqual(
       expect.objectContaining({ message: MarkFlagUCError.NO_FLAGS_AVAILABLE }),
     );
   });
@@ -139,7 +146,7 @@ describe('markFlagUseCase', () => {
       exposed: true,
     };
 
-    await expect(markFlagUseCase({ position: [2, 10], boardId })).resolves.toEqual(
+    await expect(markFlagUseCase({ position: [2, 10], ...commonProps })).resolves.toEqual(
       expect.objectContaining({
         flags: expect.arrayContaining<FlagModel>([getPosition(2, 10)]) as void,
       }),
@@ -150,7 +157,7 @@ describe('markFlagUseCase', () => {
       cells: [cellExposed],
     }));
 
-    await expect(markFlagUseCase({ position: [2, 3], boardId })).rejects.toEqual(
+    await expect(markFlagUseCase({ position: [2, 3], ...commonProps })).rejects.toEqual(
       expect.objectContaining({ message: MarkFlagUCError.CELL_ALREADY_EXPOSED }),
     );
   });

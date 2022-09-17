@@ -1,8 +1,10 @@
-import { BoardModel } from '@minesweeper/domain/Board.model';
-import { BombModel } from '@minesweeper/domain/Bomb.model';
-import { CellModel } from '@minesweeper/domain/Cell.model';
+import {
+  BoardModel,
+  BombModel,
+  CellModel,
+  NeighborsBombsCounter,
+} from '@minesweeper/domain/models';
 import { IDataRepository } from '@minesweeper/domain/data.repository';
-import { NeighborsBombsCounter } from '@minesweeper/domain/NeighborsBombsCounter.model';
 
 export enum ErrorStartGame {
   BOMBS_GREATER_THAN_ZERO = 'bombs must be greater than 0',
@@ -89,7 +91,7 @@ export const startGameUseCase: IStartGameUseCase = async ({
     bombs,
     rows,
     columns,
-    flag_available: bombsInput,
+    flags_available: bombsInput,
     flags: [],
     neighBorsBombsCounter,
   };
