@@ -58,7 +58,7 @@ describe('start game', () => {
       columns,
       rows,
       bombs_available,
-      flag_available,
+      flags_available,
       flags,
       bombs,
       neighBorsBombsCounter,
@@ -74,7 +74,7 @@ describe('start game', () => {
     expect(columns).toBe(props.columns);
     expect(rows).toBe(props.rows);
 
-    expect(flag_available).toBe(props.bombs);
+    expect(flags_available).toBe(props.bombs);
     expect(flags.length).toBe(0);
 
     // expect(neighBorsBombsCounter.length).toBe(props.columns * props.rows);

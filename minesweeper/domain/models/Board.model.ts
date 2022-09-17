@@ -5,7 +5,7 @@ import { NeighborsBombsCounter } from './NeighborsBombsCounter.model';
 
 export interface BoardModel {
   id: string;
-  flag_available: number;
+  flags_available: number;
   bombs_available: number;
   rows: number;
   columns: number;
