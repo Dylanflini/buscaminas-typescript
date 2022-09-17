@@ -10,7 +10,9 @@ export interface WithBoardId {
   boardId: IBoardId;
 }
 
-export interface IMarkFlagProps extends IPosition, WithBoardId {}
+export interface IMarkFlagProps extends IPosition, WithBoardId {
+   dataRepository: IDataRepository;
+}
 
 export type IMarkFlagResponse = BoardModel;
 export type IMarkFlagUseCase = (props: IMarkFlagProps) => Promise<IMarkFlagResponse>;
