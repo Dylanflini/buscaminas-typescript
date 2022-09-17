@@ -1,7 +1,7 @@
 import { BoardModel } from '@minesweeper/domain/Board.model';
 import { IBoardId, IPosition } from '@minesweeper/domain/commons.type';
 
-import { dataRepository } from '@minesweeper/infrastructure/data';
+import { IDataRepository } from '@minesweeper/domain/data.repository';
 
 import { makeValidations, MarkFlagUCError, GeneralError } from './markFlag.validations';
 
