@@ -19,7 +19,7 @@ export type IMarkFlagUseCase = (props: IMarkFlagProps) => Promise<IMarkFlagRespo
  * Mark flag in board
  */
 export const markFlagUseCase: IMarkFlagUseCase = async props => {
-  const { boardId, ...positionProps } = props;
+  const { boardId, dataRepository, ...positionProps } = props;
   const board = await dataRepository.getBoard(boardId);
 
   const {
