@@ -6,6 +6,10 @@ let db: BoardModel;
 
 export const dataRepository: IDataRepository = {
   saveBoard: async board => {
+    db = board;
+  },
+
+  createBoard: async board => {
     const id = createId();
 
     db = { ...board, id };

@@ -52,24 +52,14 @@ describe('start game', () => {
   it('should return initial board', async () => {
     const props = { data, bombs: 2, columns: 3, rows: 2 };
 
-    const {
-      id,
-      cells,
-      columns,
-      rows,
-      bombs_available,
-      flags_available,
-      flags,
-      bombs,
-      neighBorsBombsCounter,
-    } = await startGameUseCase(props);
+    const { id, cells, columns, rows, bombs_available, flags_available, flags } =
+      await startGameUseCase(props);
 
     expect(id).toBeTruthy();
     expect(id).not.toBe('');
     expect(cells.length).toBe(props.columns * props.rows);
 
     expect(bombs_available).toBe(props.bombs);
-    expect(bombs.length).toBe(props.bombs);
 
     expect(columns).toBe(props.columns);
     expect(rows).toBe(props.rows);
@@ -95,7 +85,7 @@ describe('start game', () => {
     ]);
   });
 
-  it('should all cells not to initilize exposed', async () => {
+  it('should all cells not to initialize exposed', async () => {
     const props = { data, bombs: 2, columns: 3, rows: 2 };
 
     const { cells } = await startGameUseCase(props);
@@ -105,44 +95,21 @@ describe('start game', () => {
     expect(match).toBe(true);
   });
 
-  it('should create 1 bomb', async () => {
-    const props = { data, bombs: 1, rows: 2, columns: 2 };
+  it('should throw error if error happens saving data of db', async () => {
+    const data: IDataRepository = {
+      createBoard: () => {
+        throw Error('something wrong!!');
+      },
+      getBoard: () => {
+        throw Error('something wrong!!');
+      },
+      saveBoard: () => {
+        throw Error('something wrong!!');
+      },
+    };
 
-    const { bombs } = await startGameUseCase(props);
-    // hay que tener ojo porque al ser random puede que en algunas ocasiones pase y otras no,
-    // pero no se como evitar eso en el test
+    const props = { data, bombs: 1, columns: 3, rows: 5 };
 
-    // ver que no sean bombas vacias
-    expect(bombs[0].position).toBeTruthy();
-
-    const [x, y] = bombs[0].position;
-
-    expect(x).toBeGreaterThanOrEqual(0);
-    expect(x).toBeLessThan(props.rows);
-
-    expect(y).toBeGreaterThanOrEqual(0);
-    expect(y).toBeLessThan(props.columns);
+    await expect(startGameUseCase(props)).rejects.toThrowError(ErrorStartGame.DB_ERROR);
   });
-
-  it('The bombs shouldn"t have the same position that other bombs', async () => {
-    const props = { data, bombs: 2, columns: 3, rows: 2 };
-
-    const { bombs } = await startGameUseCase(props);
-
-    // ver que no sean bombas vacias
-    expect(bombs[0].position).toBeTruthy();
-
-    const match = bombs.some((bomb, bombIndex) => {
-      const [bombX, bombY] = bomb.position;
-      return bombs.some(({ position }, index) => {
-        const [x, y] = position;
-        return x === bombX && y === bombY && bombIndex !== index;
-      });
-    });
-
-    expect(match).toBe(false);
-  });
-
-  it.todo('should all neighbors have value between 0 to 8');
-  it.todo('should return 3 if initial bombs is 1 and row and column 2');
 });

@@ -4,7 +4,7 @@ import { compilerOptions } from './tsconfig.json';
 
 const config: Config.InitialOptions = {
   watch: false,
-  // testEnvironment: 'jsdom',
+  roots: ['minesweeper'],
   moduleNameMapper: {
     ...pathsToModuleNameMapper(compilerOptions.paths, {
       prefix: '<rootDir>/',
@@ -13,7 +13,6 @@ const config: Config.InitialOptions = {
   transform: {
     '^.+\\.ts?$': 'ts-jest',
   },
-  testMatch: ['**/?(*.)+(spec|test).ts'],
 };
 
 export default config;

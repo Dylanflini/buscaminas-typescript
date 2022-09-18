@@ -8,9 +8,9 @@ export interface IPosition {
   position: TPosition;
 }
 
-export type IBoardId = {
+export interface IBoardId {
   id: string;
-};
+}
 
 export interface WithBoardId {
   boardId: IBoardId;
