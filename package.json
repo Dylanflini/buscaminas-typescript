@@ -12,7 +12,8 @@
     "lint": "tsc && npm run eslint:staged",
     "eslint": "eslint . --fix",
     "eslint:staged": "lint-staged",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "check:all": "npm run lint && npm run test"
   },
   "husky": {
     "hooks": {

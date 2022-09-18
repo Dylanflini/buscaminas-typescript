@@ -1,4 +1,4 @@
-import { IPosition } from '@minesweeper/domain/commons.type';
+import { IPosition } from '@minesweeper/lib/types';
 
 export interface CellModel extends IPosition {
   exposed: boolean;

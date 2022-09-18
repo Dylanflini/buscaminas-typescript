@@ -1,17 +1,15 @@
+import { IPosition, WithBoardId } from '@minesweeper/lib/types';
+import { IRepositoryUseCase } from '@minesweeper/lib/interfaces';
 import { BoardModel } from '@minesweeper/domain/models';
-import { IPosition, WithBoardId } from '@minesweeper/domain/commons.type';
-import { IDataRepository } from '@minesweeper/domain/data.repository';
-
 import { makeValidations, MarkFlagUCError, GeneralError } from './markFlag.validations';
 
-export interface IMarkFlagProps extends IPosition, WithBoardId {
-  dataRepository: IDataRepository;
-}
+export interface IMarkFlagProps extends IPosition, IRepositoryUseCase, WithBoardId {}
 export type IMarkFlagResponse = BoardModel;
 export type IMarkFlagUseCase = (props: IMarkFlagProps) => Promise<IMarkFlagResponse>;
 
 /**
- * [Use Case] Mark flag in a cell in the board in a specific position to signal that there should be a bomb there.
+ * [Use Case] Mark flag in a cell in the board in a specific
+ * position to signal that there should be a bomb there.
  */
 export const markFlagUseCase: IMarkFlagUseCase = async props => {
   const { boardId, dataRepository, ...positionProps } = props;

@@ -1,6 +1,5 @@
 import { BombModel } from '@minesweeper/domain/models';
-
-const getRandomNumber = (max: number): number => Math.round(Math.random() * max);
+import { getRandomNumber, getSamePosition } from '@minesweeper/utils';
 
 interface ICreateBombs {
   rows: number;
@@ -18,13 +17,11 @@ export const createBombs: TCreateBombs = ({ bombsInput, rows, columns }) => {
       position: [getRandomNumber(rows - 1), getRandomNumber(columns - 1)],
     };
 
-    const haveSamePosition = bombs.some(
-      bomb => bomb.position[0] === newBomb.position[0] && bomb.position[1] === newBomb.position[1],
-    );
+    const samePosition = getSamePosition(newBomb.position[0], newBomb.position[1]);
 
-    if (!haveSamePosition) {
-      bombs.push(newBomb);
-    }
+    const haveSamePosition = bombs.some(bomb => samePosition(bomb));
+
+    if (!haveSamePosition) bombs.push(newBomb);
   }
   return bombs;
 };

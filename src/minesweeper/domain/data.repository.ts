@@ -1,5 +1,5 @@
 import { BoardModel } from '@minesweeper/domain/models';
-import { IBoardId } from '@minesweeper/domain/commons.type';
+import { IBoardId } from '@minesweeper/lib/types';
 
 export interface IDataRepository {
   saveBoard: (props: BoardModel) => Promise<void>;

@@ -4,13 +4,19 @@ import { createId } from '@minesweeper/infrastructure/dependencies/uuid';
 
 let db: BoardModel;
 
+const resolve = (resolved: unknown) =>
+  new Promise(resolve => {
+    resolve(resolved);
+  });
+
 export const dataRepository: IDataRepository = {
   saveBoard: async board => {
+    await resolve(board);
     db = board;
   },
 
   createBoard: async board => {
-    const id = createId();
+    const id = (await resolve(createId())) as string;
 
     db = { ...board, id };
 
@@ -18,6 +24,7 @@ export const dataRepository: IDataRepository = {
   },
 
   getBoard: async ({ id }) => {
+    await resolve(db);
     return db;
   },
 };

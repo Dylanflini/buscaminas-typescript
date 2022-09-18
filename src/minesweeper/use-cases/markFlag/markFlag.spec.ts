@@ -1,11 +1,10 @@
 import { BoardModel, CellModel, FlagModel } from '@minesweeper/domain/models';
 import { dataRepository } from '@minesweeper/infrastructure/data';
+import { getPosition } from '@minesweeper/utils';
 import { markFlagUseCase, MarkFlagUCError, GeneralError } from './markFlag';
 
 jest.mock('@minesweeper/infrastructure/data');
 jest.mock('@minesweeper/infrastructure/dependencies/uuid');
-
-const getPosition = (column: number, row: number): FlagModel => ({ position: [column, row] }); // util to export
 
 describe('markFlagUseCase', () => {
   /**

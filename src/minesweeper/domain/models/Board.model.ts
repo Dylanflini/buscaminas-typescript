@@ -1,4 +1,4 @@
-import { IBoardId } from '@minesweeper/domain/commons.type';
+import { IBoardId } from '@minesweeper/lib/types';
 import { BombModel } from './Bomb.model';
 import { CellModel } from './Cell.model';
 import { FlagModel } from './Flag.model';
@@ -13,4 +13,12 @@ export interface BoardModel extends IBoardId {
   bombs: BombModel[];
   neighBorsBombsCounter: NeighborsBombsCounter[];
   flags: FlagModel[];
+}
+
+export interface PublicBoardModel
+  extends Omit<
+    BoardModel,
+    'neighBorsBombsCounter' | 'bombs' | 'bombs_available' | 'columns' | 'rows'
+  > {
+  user: string;
 }

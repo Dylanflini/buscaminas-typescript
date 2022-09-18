@@ -1,11 +1,6 @@
-import { IPosition } from '@minesweeper/domain/commons.type';
+import { IPosition } from '@minesweeper/lib/types';
+import { isNaturalNumber } from '@minesweeper/utils';
 import { IMarkFlagProps, IMarkFlagResponse } from './markFlag';
-
-export const isNaturalNumber = (value: number) => {
-  const absoluteValue = Math.abs(value);
-  const integerValue = parseInt(value.toString(), 10);
-  return integerValue === value && integerValue === absoluteValue && absoluteValue === value;
-};
 
 export enum GeneralError {
   NOT_NATURAL_NUMBER = '[General Error] You only can add natural numbers (0,1,2,3,...)',
