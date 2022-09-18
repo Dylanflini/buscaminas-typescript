@@ -52,7 +52,7 @@ describe('start game', () => {
   it('should return initial board', async () => {
     const props = { data, bombs: 2, columns: 3, rows: 2 };
 
-    const { id, cells, columns, rows, bombs_available, flag_available, flags } =
+    const { id, cells, columns, rows, bombs_available, flags_available, flags } =
       await startGameUseCase(props);
 
     expect(id).toBeTruthy();
@@ -64,7 +64,7 @@ describe('start game', () => {
     expect(columns).toBe(props.columns);
     expect(rows).toBe(props.rows);
 
-    expect(flag_available).toBe(props.bombs);
+    expect(flags_available).toBe(props.bombs);
     expect(flags.length).toBe(0);
 
     // expect(neighBorsBombsCounter.length).toBe(props.columns * props.rows);
@@ -101,6 +101,9 @@ describe('start game', () => {
         throw Error('something wrong!!');
       },
       getBoard: () => {
+        throw Error('something wrong!!');
+      },
+      saveBoard: () => {
         throw Error('something wrong!!');
       },
     };

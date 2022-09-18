@@ -1,5 +1,4 @@
-import { BombModel } from '@minesweeper/domain/Bomb.model';
-import { CellModel } from '@minesweeper/domain/Cell.model';
+import { BombModel, CellModel } from '@minesweeper/domain/models';
 import { createNeighborsCounter } from './createNeighborsCounter';
 
 describe('create neighbors', () => {

@@ -1,4 +1,4 @@
-import { IPosition } from './commons.type';
+import { IPosition } from '@minesweeper/domain/commons.type';
 
 export type TNeighborQuantity = number;
 

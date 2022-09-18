@@ -1,4 +1,4 @@
-import { BombModel } from '@minesweeper/domain/Bomb.model';
+import { BombModel } from '@minesweeper/domain/models';
 
 const getRandomNumber = (max: number): number => Math.round(Math.random() * max);
 

@@ -1,6 +1,4 @@
-import { BombModel } from '@minesweeper/domain/Bomb.model';
-import { CellModel } from '@minesweeper/domain/Cell.model';
-import { NeighborsBombsCounter } from '@minesweeper/domain/NeighborsBombsCounter.model';
+import { BombModel, CellModel, NeighborsBombsCounter } from '@minesweeper/domain/models';
 
 const filterBombsAround =
   (cell: CellModel) =>
