@@ -4,10 +4,10 @@ import { createNeighborsCounter } from './createNeighborsCounter';
 describe('create neighbors', () => {
   it('should return correct neighbor counter if board have 1', () => {
     const cells: CellModel[] = [
-      { position: [0, 0], exposed: false },
-      { position: [1, 0], exposed: false },
-      { position: [0, 1], exposed: false },
-      { position: [1, 1], exposed: false },
+      { position: [0, 0] },
+      { position: [1, 0] },
+      { position: [0, 1] },
+      { position: [1, 1] },
     ];
 
     const bombs: BombModel[] = [{ position: [0, 0] }];
@@ -28,10 +28,10 @@ describe('create neighbors', () => {
 
   it('should return correct neighbors counter if board have 2 bombs', () => {
     const cells: CellModel[] = [
-      { position: [0, 0], exposed: false },
-      { position: [1, 0], exposed: false },
-      { position: [0, 1], exposed: false },
-      { position: [1, 1], exposed: false },
+      { position: [0, 0] },
+      { position: [1, 0] },
+      { position: [0, 1] },
+      { position: [1, 1] },
     ];
 
     const bombs: BombModel[] = [{ position: [0, 0] }, { position: [1, 1] }];
@@ -52,10 +52,10 @@ describe('create neighbors', () => {
 
   it('should return correct neighbors counter if board have 3 bombs', () => {
     const cells: CellModel[] = [
-      { position: [0, 0], exposed: false },
-      { position: [1, 0], exposed: false },
-      { position: [0, 1], exposed: false },
-      { position: [1, 1], exposed: false },
+      { position: [0, 0] },
+      { position: [1, 0] },
+      { position: [0, 1] },
+      { position: [1, 1] },
     ];
 
     const bombs: BombModel[] = [{ position: [0, 0] }, { position: [1, 0] }, { position: [1, 1] }];
@@ -76,10 +76,10 @@ describe('create neighbors', () => {
 
   it('should return correct neighbors counter if board have 2 bombs (v2)', () => {
     const cells: CellModel[] = [
-      { position: [0, 0], exposed: false },
-      { position: [1, 0], exposed: false },
-      { position: [0, 1], exposed: false },
-      { position: [1, 1], exposed: false },
+      { position: [0, 0] },
+      { position: [1, 0] },
+      { position: [0, 1] },
+      { position: [1, 1] },
     ];
 
     const bombs: BombModel[] = [{ position: [0, 0] }, { position: [1, 0] }, { position: [0, 1] }];

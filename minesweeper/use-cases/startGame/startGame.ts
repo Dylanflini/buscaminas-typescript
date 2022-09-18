@@ -59,7 +59,7 @@ export const startGameUseCase: IStartGameUseCase = async ({
 
   for (let y = 0; y < columns; y++) {
     for (let x = 0; x < rows; x++) {
-      cells.push({ exposed: false, position: [x, y] });
+      cells.push({ position: [x, y] });
     }
   }
 

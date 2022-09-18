@@ -21,7 +21,7 @@ describe('markFlagUseCase', () => {
     rows: 10,
     columns: 10,
     bombs: [{ position: [0, 0] }],
-    cells: [{ position: [0, 0], exposed: false }],
+    cells: [{ position: [0, 0] }],
     neighBorsBombsCounter: [{ position: [0, 0], quantity: 5 }],
     flags: [],
   };
@@ -140,25 +140,32 @@ describe('markFlagUseCase', () => {
       expect.objectContaining({ message: MarkFlagUCError.NO_FLAGS_AVAILABLE }),
     );
   });
-  it('should not add a flag in a cell which is already exposed', async () => {
-    const cellExposed: CellModel = {
-      position: [2, 3],
-      exposed: true,
-    };
 
-    await expect(markFlagUseCase({ position: [2, 10], ...commonProps })).resolves.toEqual(
-      expect.objectContaining({
-        flags: expect.arrayContaining<FlagModel>([getPosition(2, 10)]) as void,
-      }),
-    );
+  const cases: CellModel[][] = [
+    [{ position: [2, 3], adjacentBombs: 0 }],
+    [{ position: [2, 3], adjacentBombs: 3 }],
+    [{ position: [2, 3], isBomb: false }],
+    [{ position: [2, 3], isBomb: true }],
+  ];
 
-    (dataRepository.getBoard as jest.Mock).mockImplementationOnce(() => ({
-      ...boardMocked,
-      cells: [cellExposed],
-    }));
+  it.each(cases)(
+    'should not add a flag in a cell which is already exposed - %#',
+    async cellExposed => {
+      (dataRepository.getBoard as jest.Mock).mockImplementationOnce(() => ({
+        ...boardMocked,
+        cells: [cellExposed],
+      }));
 
-    await expect(markFlagUseCase({ position: [2, 3], ...commonProps })).rejects.toEqual(
-      expect.objectContaining({ message: MarkFlagUCError.CELL_ALREADY_EXPOSED }),
-    );
-  });
+      await expect(
+        markFlagUseCase({
+          position: [2, 3],
+          boardId,
+          dataRepository: {
+            ...dataRepository,
+            getBoard: () => Promise.resolve({ ...boardMocked, cells: [cellExposed] }),
+          },
+        }),
+      ).rejects.toEqual(expect.objectContaining({ message: MarkFlagUCError.CELL_ALREADY_EXPOSED }));
+    },
+  );
 });

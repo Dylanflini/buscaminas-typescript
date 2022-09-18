@@ -76,12 +76,12 @@ describe('start game', () => {
     const { cells } = await startGameUseCase(props);
 
     expect(cells).toStrictEqual([
-      { exposed: false, position: [0, 0] },
-      { exposed: false, position: [1, 0] },
-      { exposed: false, position: [2, 0] },
-      { exposed: false, position: [0, 1] },
-      { exposed: false, position: [1, 1] },
-      { exposed: false, position: [2, 1] },
+      { position: [0, 0] },
+      { position: [1, 0] },
+      { position: [2, 0] },
+      { position: [0, 1] },
+      { position: [1, 1] },
+      { position: [2, 1] },
     ]);
   });
 
@@ -90,7 +90,9 @@ describe('start game', () => {
 
     const { cells } = await startGameUseCase(props);
 
-    const match = cells.every(({ exposed }) => exposed === false);
+    const match = cells.every(
+      ({ adjacentBombs, isBomb }) => adjacentBombs === undefined && isBomb === undefined,
+    );
 
     expect(match).toBe(true);
   });
