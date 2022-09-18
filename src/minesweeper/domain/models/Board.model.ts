@@ -14,11 +14,3 @@ export interface BoardModel extends IBoardId {
   neighBorsBombsCounter: NeighborsBombsCounter[];
   flags: FlagModel[];
 }
-
-export interface PublicBoardModel
-  extends Omit<
-    BoardModel,
-    'neighBorsBombsCounter' | 'bombs' | 'bombs_available' | 'columns' | 'rows'
-  > {
-  user: string;
-}
