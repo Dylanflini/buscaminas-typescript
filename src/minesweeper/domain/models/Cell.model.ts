@@ -1,4 +1,4 @@
-import { IPosition, TPosition } from '@minesweeper/domain/commons.type';
+import { IPosition, TPosition } from './Position.model';
 
 export class Cell implements IPosition {
   /**

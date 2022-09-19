@@ -1,8 +1,11 @@
-import { IBoardId } from '@minesweeper/domain/commons.type';
 import { BombModel } from './Bomb.model';
 import { Cell } from './Cell.model';
 import { FlagModel } from './Flag.model';
 import { NeighborsBombsCounter } from './NeighborsBombsCounter.model';
+
+export interface IBoardId {
+  boardId: string;
+}
 
 export interface BoardModel extends IBoardId {
   bombs_available: number;

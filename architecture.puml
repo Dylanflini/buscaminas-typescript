@@ -1,0 +1,26 @@
+@startuml Architecture
+title Application Architecture
+
+note left of Infraestructure
+    For each layer there
+    should be an interface
+    as bridge
+end note
+
+package "Application" {
+    package "Infraestructure" {
+
+        component "Data Repository"
+
+        package "Use Cases" {
+            package "Domain" {
+                component Models
+            }
+        }
+    }
+    package "Library" {
+        component Utils
+        component Types
+    }
+
+}
