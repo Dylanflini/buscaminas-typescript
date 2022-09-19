@@ -18,4 +18,4 @@ export interface BoardModel extends IBoardId {
   flags: FlagModel[];
 }
 
-export type PublicBoardModel = Pick<BoardModel, 'flags_available' | 'cells' | 'flags'>;
+export type PublicBoardModel = Pick<BoardModel, 'flags_available' | 'cells' | 'flags' | 'boardId'>;

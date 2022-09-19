@@ -1,7 +1,7 @@
 import { IRepositoryUseCase } from '@minesweeper/domain/data.repository';
 import { createBombs } from './createBombs';
 import { createNeighborsCounter } from './createNeighborsCounter';
-import { BoardModel, Cell } from '@minesweeper/domain/models';
+import { BoardModel, Cell, PublicBoardModel } from '@minesweeper/domain/models';
 
 export enum ErrorStartGame {
   BOMBS_GREATER_THAN_ZERO = 'bombs must be greater than 0',
@@ -18,9 +18,7 @@ interface IStartGameProps extends IRepositoryUseCase {
   bombs: number;
 }
 
-type IBoardResponse = Omit<BoardModel, 'bombs' | 'neighBorsBombsCounter'>;
-
-type IStartGameUseCase = (props: IStartGameProps) => Promise<IBoardResponse>;
+type IStartGameUseCase = (props: IStartGameProps) => Promise<PublicBoardModel>;
 
 /**
  * Start game base on initial props

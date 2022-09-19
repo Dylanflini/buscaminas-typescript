@@ -1,10 +1,9 @@
 import { IRepositoryUseCase } from '@minesweeper/domain/data.repository';
-import { BoardModel, IPosition, IBoardId } from '@minesweeper/domain/models';
+import { IPosition, IBoardId, PublicBoardModel } from '@minesweeper/domain/models';
 import { makeValidations, MarkFlagUCError, GeneralError } from './markFlag.validations';
 
 export interface IMarkFlagProps extends IPosition, IRepositoryUseCase, IBoardId {}
-export type IMarkFlagResponse = BoardModel;
-export type IMarkFlagUseCase = (props: IMarkFlagProps) => Promise<IMarkFlagResponse>;
+export type IMarkFlagUseCase = (props: IMarkFlagProps) => Promise<PublicBoardModel>;
 
 /**
  * [Use Case] Mark flag in a cell in the board in a specific

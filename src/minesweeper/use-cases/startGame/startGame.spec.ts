@@ -51,22 +51,14 @@ describe('start game', () => {
   it('should return initial board', async () => {
     const props = { dataRepository, bombs: 2, columns: 3, rows: 2 };
 
-    const { boardId, cells, columns, rows, bombs_available, flags_available, flags } =
-      await startGameUseCase(props);
+    const { boardId, cells, flags_available, flags } = await startGameUseCase(props);
 
     expect(boardId).toBeTruthy();
     expect(boardId).not.toBe('');
     expect(cells.length).toBe(props.columns * props.rows);
 
-    expect(bombs_available).toBe(props.bombs);
-
-    expect(columns).toBe(props.columns);
-    expect(rows).toBe(props.rows);
-
     expect(flags_available).toBe(props.bombs);
     expect(flags.length).toBe(0);
-
-    // expect(neighBorsBombsCounter.length).toBe(props.columns * props.rows);
   });
 
   it('should return initial cells', async () => {
