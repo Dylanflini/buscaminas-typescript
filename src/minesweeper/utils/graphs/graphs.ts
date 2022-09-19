@@ -4,7 +4,7 @@ import { getPosition, hasSamePosition } from '../position/position';
 /**
  * Graph Vertex Edge
  */
-export const getAdjacentVertex = (graph: IPosition[], selected: IPosition): IPosition[] => {
+export const getAdjacentVertex = <E extends IPosition>(graph: E[], selected: E): E[] => {
   const [selectedX, selectedY] = selected.position;
 
   const adjacentVertexIndex = [
