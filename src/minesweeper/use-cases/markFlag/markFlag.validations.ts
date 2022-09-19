@@ -1,4 +1,5 @@
-import { BoardModel, IPosition } from '@minesweeper/domain/models';
+import { BoardModel } from '@minesweeper/domain/models';
+import { hasSamePosition } from '@minesweeper/utils';
 import { IMarkFlagProps } from './markFlag';
 
 export const isNaturalNumber = (value: number) => {
@@ -20,12 +21,11 @@ export enum MarkFlagUCError {
 
 export const makeValidations = (props: IMarkFlagProps, board: BoardModel) => {
   const [columnMarked, rowMarked] = props.position;
-  const samePosition = ({ position: [column, row] }: IPosition) =>
-    column === columnMarked && row === rowMarked;
+
   return {
     OUTSIDE_BOARD: columnMarked > board.columns || rowMarked > board.rows,
-    ALREADY_A_FLAG: board.flags.some(flag => samePosition(flag)),
-    CELL_ALREADY_EXPOSED: board.cells.some(cell => cell.isExposed && samePosition(cell)),
+    ALREADY_A_FLAG: board.flags.some(flag => hasSamePosition(flag, props)),
+    CELL_ALREADY_EXPOSED: board.cells.some(cell => cell.isExposed && hasSamePosition(cell, props)),
     NO_FLAGS_AVAILABLE: board.flags_available === 0,
     NOT_NATURAL_NUMBER: !isNaturalNumber(columnMarked) || !isNaturalNumber(rowMarked),
   };

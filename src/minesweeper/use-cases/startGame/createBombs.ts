@@ -17,7 +17,7 @@ export const createBombs: TCreateBombs = ({ bombsInput, rows, columns }) => {
       position: [getRandomNumber(rows - 1), getRandomNumber(columns - 1)],
     };
 
-    const bombAlreadyExists = bombs.some(bomb => hasSamePosition(bomb.position, newBomb.position));
+    const bombAlreadyExists = bombs.some(bomb => hasSamePosition(bomb, newBomb));
 
     if (!bombAlreadyExists) bombs.push(newBomb);
   }

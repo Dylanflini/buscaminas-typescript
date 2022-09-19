@@ -1,13 +1,10 @@
-import { IPosition, TPosition } from '@minesweeper/domain/models';
+import { IPosition } from '@minesweeper/domain/models';
 
-type hasSamePosition = (
-  firstElementPosition: TPosition,
-  secondElementPosition: TPosition,
-) => boolean;
+type hasSamePosition = (firstElement: IPosition, secondElement: IPosition) => boolean;
 
-export const hasSamePosition: hasSamePosition = (firstElementPosition, secondElementPosition) => {
-  const [firstX, firstY] = firstElementPosition;
-  const [secondX, secondY] = secondElementPosition;
+export const hasSamePosition: hasSamePosition = (firstElement, secondElement) => {
+  const [firstX, firstY] = firstElement.position;
+  const [secondX, secondY] = secondElement.position;
 
   return firstX === secondX && firstY === secondY;
 };
