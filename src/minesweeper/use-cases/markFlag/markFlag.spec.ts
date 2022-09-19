@@ -1,34 +1,17 @@
-import { BoardModel, Cell, FlagModel } from '@minesweeper/domain/models';
+import { Cell, FlagModel } from '@minesweeper/domain/models';
 import { dataRepository } from '@minesweeper/infrastructure/data';
 import { getPosition } from '@minesweeper/utils';
-import { markFlagUseCase, MarkFlagUCError, GeneralError } from './markFlag';
+import { boardId, boardMocked, flagAvailableMocked } from '@minesweeper/utils/mocks';
+import { GeneralError } from '../validations';
+import { markFlagUseCase, MarkFlagUCError } from './markFlag';
 
 jest.mock('@minesweeper/infrastructure/data');
 jest.mock('@minesweeper/infrastructure/id/createId');
 
 describe('markFlagUseCase', () => {
   /**
-   * Mock Data
-   */
-  const boardId = '111-222-333';
-  const flagAvailableMocked = 20;
-
-  const boardMocked: BoardModel = {
-    boardId,
-    flags_available: flagAvailableMocked,
-    bombs_available: 10,
-    rows: 10,
-    columns: 10,
-    bombs: [{ position: [0, 0] }],
-    cells: [new Cell([0, 0])],
-    neighBorsBombsCounter: [{ position: [0, 0], quantity: 5 }],
-    flags: [],
-  };
-
-  /**
    * Mock Implementation
    */
-
   (dataRepository.saveBoard as jest.Mock).mockImplementation(() => boardId);
 
   beforeEach(() => {
@@ -47,8 +30,6 @@ describe('markFlagUseCase', () => {
     const { flags, flags_available } = await markFlagUseCase({ position: [5, 7], ...commonProps });
     expect(flags[0].position).toStrictEqual([5, 7]);
     expect(flags_available).toBe(flagAvailableMocked - 1);
-
-    flagAvailableMocked;
   });
   it('should not add a flag in a position outside the limits of the board', async () => {
     const inside = 7;
@@ -61,15 +42,15 @@ describe('markFlagUseCase', () => {
     );
 
     await expect(markFlagUseCase({ position: [outside, inside], ...commonProps })).rejects.toEqual(
-      expect.objectContaining({ message: MarkFlagUCError.OUTSIDE_BOARD }),
+      expect.objectContaining({ message: GeneralError.OUTSIDE_BOARD }),
     );
 
     await expect(markFlagUseCase({ position: [inside, outside], ...commonProps })).rejects.toEqual(
-      expect.objectContaining({ message: MarkFlagUCError.OUTSIDE_BOARD }),
+      expect.objectContaining({ message: GeneralError.OUTSIDE_BOARD }),
     );
 
     await expect(markFlagUseCase({ position: [outside, outside], ...commonProps })).rejects.toEqual(
-      expect.objectContaining({ message: MarkFlagUCError.OUTSIDE_BOARD }),
+      expect.objectContaining({ message: GeneralError.OUTSIDE_BOARD }),
     );
   });
 
@@ -164,7 +145,7 @@ describe('markFlagUseCase', () => {
             getBoard: () => Promise.resolve({ ...boardMocked, cells: [cellExposed] }),
           },
         }),
-      ).rejects.toEqual(expect.objectContaining({ message: MarkFlagUCError.CELL_ALREADY_EXPOSED }));
+      ).rejects.toEqual(expect.objectContaining({ message: GeneralError.CELL_ALREADY_EXPOSED }));
     },
   );
 });

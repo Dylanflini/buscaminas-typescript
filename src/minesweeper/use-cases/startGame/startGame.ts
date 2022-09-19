@@ -1,7 +1,7 @@
 import { IRepositoryUseCase } from '@minesweeper/domain/data.repository';
-import { createBombs } from './createBombs';
-import { createNeighborsCounter } from './createNeighborsCounter';
 import { BoardModel, Cell, PublicBoardModel } from '@minesweeper/domain/models';
+import { createBombs } from './createBombs/createBombs';
+import { createNeighborsCounter } from './createNeighborsCounter/createNeighborsCounter';
 
 export enum ErrorStartGame {
   BOMBS_GREATER_THAN_ZERO = 'bombs must be greater than 0',
