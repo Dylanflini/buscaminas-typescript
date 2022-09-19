@@ -1,4 +1,5 @@
 import { IDataRepository } from '@minesweeper/domain/data.repository';
+import { Cell } from '@minesweeper/domain/models';
 import { dataRepository } from '@minesweeper/infrastructure/data';
 import { ErrorStartGame, startGameUseCase } from './startGame';
 
@@ -50,22 +51,14 @@ describe('start game', () => {
   it('should return initial board', async () => {
     const props = { dataRepository, bombs: 2, columns: 3, rows: 2 };
 
-    const { boardId, cells, columns, rows, bombs_available, flags_available, flags } =
-      await startGameUseCase(props);
+    const { boardId, cells, flags_available, flags } = await startGameUseCase(props);
 
     expect(boardId).toBeTruthy();
     expect(boardId).not.toBe('');
     expect(cells.length).toBe(props.columns * props.rows);
 
-    expect(bombs_available).toBe(props.bombs);
-
-    expect(columns).toBe(props.columns);
-    expect(rows).toBe(props.rows);
-
     expect(flags_available).toBe(props.bombs);
     expect(flags.length).toBe(0);
-
-    // expect(neighBorsBombsCounter.length).toBe(props.columns * props.rows);
   });
 
   it('should return initial cells', async () => {
@@ -74,12 +67,12 @@ describe('start game', () => {
     const { cells } = await startGameUseCase(props);
 
     expect(cells).toStrictEqual([
-      { exposed: false, position: [0, 0] },
-      { exposed: false, position: [1, 0] },
-      { exposed: false, position: [2, 0] },
-      { exposed: false, position: [0, 1] },
-      { exposed: false, position: [1, 1] },
-      { exposed: false, position: [2, 1] },
+      new Cell([0, 0]),
+      new Cell([1, 0]),
+      new Cell([2, 0]),
+      new Cell([0, 1]),
+      new Cell([1, 1]),
+      new Cell([2, 1]),
     ]);
   });
 
@@ -88,7 +81,9 @@ describe('start game', () => {
 
     const { cells } = await startGameUseCase(props);
 
-    const match = cells.every(({ exposed }) => exposed === false);
+    const match = cells.every(
+      ({ adjacentBombs, hasBomb }) => adjacentBombs === undefined && hasBomb === undefined,
+    );
 
     expect(match).toBe(true);
   });

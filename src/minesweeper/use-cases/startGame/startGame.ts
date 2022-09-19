@@ -1,7 +1,7 @@
-import { BoardModel, CellModel } from '@minesweeper/domain/models';
 import { IRepositoryUseCase } from '@minesweeper/domain/data.repository';
 import { createBombs } from './createBombs';
 import { createNeighborsCounter } from './createNeighborsCounter';
+import { BoardModel, Cell, PublicBoardModel } from '@minesweeper/domain/models';
 
 export enum ErrorStartGame {
   BOMBS_GREATER_THAN_ZERO = 'bombs must be greater than 0',
@@ -18,9 +18,7 @@ interface IStartGameProps extends IRepositoryUseCase {
   bombs: number;
 }
 
-type IBoardResponse = Omit<BoardModel, 'bombs' | 'neighBorsBombsCounter'>;
-
-type IStartGameUseCase = (props: IStartGameProps) => Promise<IBoardResponse>;
+type IStartGameUseCase = (props: IStartGameProps) => Promise<PublicBoardModel>;
 
 /**
  * Start game base on initial props
@@ -40,11 +38,11 @@ export const startGameUseCase: IStartGameUseCase = async ({
 
   if (bombsInput >= totalCells) throw Error(ErrorStartGame.BOMBS_GREATER_THAN_TOTAL_CELLS);
 
-  const cells: CellModel[] = [];
+  const cells: Cell[] = [];
 
   for (let y = 0; y < columns; y++) {
     for (let x = 0; x < rows; x++) {
-      cells.push({ exposed: false, position: [x, y] });
+      cells.push(new Cell([x, y]));
     }
   }
 

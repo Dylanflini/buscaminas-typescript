@@ -1,5 +1,5 @@
 import { BombModel } from './Bomb.model';
-import { CellModel } from './Cell.model';
+import { Cell } from './Cell.model';
 import { FlagModel } from './Flag.model';
 import { NeighborsBombsCounter } from './NeighborsBombsCounter.model';
 
@@ -8,12 +8,14 @@ export interface IBoardId {
 }
 
 export interface BoardModel extends IBoardId {
-  flags_available: number;
   bombs_available: number;
   rows: number;
   columns: number;
-  cells: CellModel[];
   bombs: BombModel[];
   neighBorsBombsCounter: NeighborsBombsCounter[];
+  flags_available: number;
+  cells: Cell[];
   flags: FlagModel[];
 }
+
+export type PublicBoardModel = Pick<BoardModel, 'flags_available' | 'cells' | 'flags' | 'boardId'>;
