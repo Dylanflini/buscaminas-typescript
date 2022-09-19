@@ -1,6 +1,6 @@
 import { createBombs } from './createBombs';
 import { createNeighborsCounter } from './createNeighborsCounter';
-import { BoardModel, CellModel } from '@minesweeper/domain/models';
+import { BoardModel, Cell } from '@minesweeper/domain/models';
 import { IDataRepository } from '@minesweeper/domain/data.repository';
 
 export enum ErrorStartGame {
@@ -55,11 +55,11 @@ export const startGameUseCase: IStartGameUseCase = async ({
     throw Error(ErrorStartGame.BOMBS_GREATER_THAN_TOTAL_CELLS);
   }
 
-  const cells: CellModel[] = [];
+  const cells: Cell[] = [];
 
   for (let y = 0; y < columns; y++) {
     for (let x = 0; x < rows; x++) {
-      cells.push(new CellModel([x, y]));
+      cells.push(new Cell([x, y]));
     }
   }
 

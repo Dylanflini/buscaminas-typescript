@@ -1,5 +1,5 @@
 import { IDataRepository } from '@minesweeper/domain/data.repository';
-import { CellModel } from '@minesweeper/domain/models';
+import { Cell } from '@minesweeper/domain/models';
 import { dataRepository } from '@minesweeper/infrastructure/data';
 import { ErrorStartGame, startGameUseCase } from './startGame';
 
@@ -77,12 +77,12 @@ describe('start game', () => {
     const { cells } = await startGameUseCase(props);
 
     expect(cells).toStrictEqual([
-      new CellModel([0, 0]),
-      new CellModel([1, 0]),
-      new CellModel([2, 0]),
-      new CellModel([0, 1]),
-      new CellModel([1, 1]),
-      new CellModel([2, 1]),
+      new Cell([0, 0]),
+      new Cell([1, 0]),
+      new Cell([2, 0]),
+      new Cell([0, 1]),
+      new Cell([1, 1]),
+      new Cell([2, 1]),
     ]);
   });
 

@@ -1,4 +1,4 @@
-import { BoardModel, CellModel, FlagModel } from '@minesweeper/domain/models';
+import { BoardModel, Cell, FlagModel } from '@minesweeper/domain/models';
 import { dataRepository } from '@minesweeper/infrastructure/data';
 import { markFlagUseCase, MarkFlagUCError, GeneralError } from './markFlag';
 
@@ -21,7 +21,7 @@ describe('markFlagUseCase', () => {
     rows: 10,
     columns: 10,
     bombs: [{ position: [0, 0] }],
-    cells: [new CellModel([0, 0])],
+    cells: [new Cell([0, 0])],
     neighBorsBombsCounter: [{ position: [0, 0], quantity: 5 }],
     flags: [],
   };
@@ -141,11 +141,11 @@ describe('markFlagUseCase', () => {
     );
   });
 
-  const cases: CellModel[][] = [
-    [new CellModel([2, 3], { adjacentBombs: 0 })],
-    [new CellModel([2, 3], { adjacentBombs: 3 })],
-    [new CellModel([2, 3], { hasBomb: false })],
-    [new CellModel([2, 3], { hasBomb: true })],
+  const cases: Cell[][] = [
+    [new Cell([2, 3], { adjacentBombs: 0 })],
+    [new Cell([2, 3], { adjacentBombs: 3 })],
+    [new Cell([2, 3], { hasBomb: false })],
+    [new Cell([2, 3], { hasBomb: true })],
   ];
 
   it.each(cases)(

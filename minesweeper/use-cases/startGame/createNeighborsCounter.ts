@@ -1,7 +1,7 @@
-import { BombModel, CellModel, NeighborsBombsCounter } from '@minesweeper/domain/models';
+import { BombModel, Cell, NeighborsBombsCounter } from '@minesweeper/domain/models';
 
 const filterBombsAround =
-  (cell: CellModel) =>
+  (cell: Cell) =>
   (bomb: BombModel): boolean => {
     const [cellX, CellY] = cell.position;
     const [bombX, bombY] = bomb.position;
@@ -15,7 +15,7 @@ const filterBombsAround =
   };
 
 interface ICreateNeighborsCounter {
-  cells: CellModel[];
+  cells: Cell[];
   bombs: BombModel[];
 }
 

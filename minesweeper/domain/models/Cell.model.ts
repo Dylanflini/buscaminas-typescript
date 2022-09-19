@@ -1,6 +1,6 @@
 import { IPosition, TPosition } from '@minesweeper/domain/commons.type';
 
-export class CellModel implements IPosition {
+export class Cell implements IPosition {
   /**
    * represent internal state of cell
    *
@@ -14,7 +14,7 @@ export class CellModel implements IPosition {
    */
   public adjacentBombs?: number | undefined;
 
-  constructor(public position: TPosition, config: Partial<CellModel> = {}) {
+  constructor(public position: TPosition, config: Partial<Cell> = {}) {
     Object.assign(this, config);
   }
 

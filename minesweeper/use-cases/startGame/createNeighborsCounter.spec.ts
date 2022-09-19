@@ -1,13 +1,8 @@
-import { BombModel, CellModel } from '@minesweeper/domain/models';
+import { BombModel, Cell } from '@minesweeper/domain/models';
 import { createNeighborsCounter } from './createNeighborsCounter';
 
 describe('create neighbors', () => {
-  const cells: CellModel[] = [
-    new CellModel([0, 0]),
-    new CellModel([1, 0]),
-    new CellModel([0, 1]),
-    new CellModel([1, 1]),
-  ];
+  const cells: Cell[] = [new Cell([0, 0]), new Cell([1, 0]), new Cell([0, 1]), new Cell([1, 1])];
 
   it('should return correct neighbor counter if board have 1', () => {
     const bombs: BombModel[] = [{ position: [0, 0] }];
