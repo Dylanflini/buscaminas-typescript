@@ -1,10 +1,8 @@
+import { IDataRepository } from '@minesweeper/domain/data.repository';
 import { BoardModel, Cell, FlagModel } from '@minesweeper/domain/models';
 import { dataRepository } from '@minesweeper/infrastructure/data';
 import { getPosition } from '@minesweeper/utils';
 import { markFlagUseCase, MarkFlagUCError, GeneralError } from './markFlag';
-
-jest.mock('@minesweeper/infrastructure/data');
-jest.mock('@minesweeper/infrastructure/id/createId');
 
 describe('markFlagUseCase', () => {
   /**
@@ -26,29 +24,24 @@ describe('markFlagUseCase', () => {
   };
 
   /**
-   * Mock Implementation
-   */
-
-  (dataRepository.saveBoard as jest.Mock).mockImplementation(() => boardId);
-
-  beforeEach(() => {
-    (dataRepository.getBoard as jest.Mock).mockImplementation(() => boardMocked);
-  });
-
-  /**
    * Test commons
    */
+
+  const newDataRepository: IDataRepository = {
+    ...dataRepository,
+    saveBoard: () => Promise.resolve(),
+    getBoard: () => Promise.resolve(boardMocked),
+  };
+
   const commonProps = {
     boardId,
-    dataRepository,
+    dataRepository: newDataRepository,
   };
 
   it('should mark a flag in the board', async () => {
     const { flags, flags_available } = await markFlagUseCase({ position: [5, 7], ...commonProps });
     expect(flags[0].position).toStrictEqual([5, 7]);
     expect(flags_available).toBe(flagAvailableMocked - 1);
-
-    flagAvailableMocked;
   });
   it('should not add a flag in a position outside the limits of the board', async () => {
     const inside = 7;
@@ -130,14 +123,20 @@ describe('markFlagUseCase', () => {
       }),
     );
 
-    (dataRepository.getBoard as jest.Mock).mockImplementationOnce(() => ({
+    const newBoardMocked: BoardModel = {
       ...boardMocked,
       flags_available: 0,
-    }));
+    };
 
-    await expect(markFlagUseCase({ position: [3, 4], ...commonProps })).rejects.toEqual(
-      expect.objectContaining({ message: MarkFlagUCError.NO_FLAGS_AVAILABLE }),
-    );
+    const newDataRepository: IDataRepository = {
+      ...dataRepository,
+      saveBoard: () => Promise.resolve(),
+      getBoard: () => Promise.resolve(newBoardMocked),
+    };
+
+    await expect(
+      markFlagUseCase({ position: [3, 4], boardId, dataRepository: newDataRepository }),
+    ).rejects.toEqual(expect.objectContaining({ message: MarkFlagUCError.NO_FLAGS_AVAILABLE }));
   });
 
   const cases: Cell[][] = [
@@ -148,21 +147,24 @@ describe('markFlagUseCase', () => {
   ];
 
   it.each(cases)(
-    'should not add a flag in a cell which is already exposed - %#',
+    'should not add a flag in a cell which is already exposed - (test n %#)',
     async cellExposed => {
-      (dataRepository.getBoard as jest.Mock).mockImplementationOnce(() => ({
+      const newBoardMocked: BoardModel = {
         ...boardMocked,
         cells: [cellExposed],
-      }));
+      };
+
+      const newDataRepository: IDataRepository = {
+        ...dataRepository,
+        saveBoard: () => Promise.resolve(),
+        getBoard: () => Promise.resolve(newBoardMocked),
+      };
 
       await expect(
         markFlagUseCase({
           position: [2, 3],
           boardId,
-          dataRepository: {
-            ...dataRepository,
-            getBoard: () => Promise.resolve({ ...boardMocked, cells: [cellExposed] }),
-          },
+          dataRepository: newDataRepository,
         }),
       ).rejects.toEqual(expect.objectContaining({ message: MarkFlagUCError.CELL_ALREADY_EXPOSED }));
     },
