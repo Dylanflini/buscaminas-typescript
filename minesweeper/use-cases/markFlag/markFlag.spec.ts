@@ -21,7 +21,7 @@ describe('markFlagUseCase', () => {
     rows: 10,
     columns: 10,
     bombs: [{ position: [0, 0] }],
-    cells: [{ position: [0, 0] }],
+    cells: [new CellModel([0, 0])],
     neighBorsBombsCounter: [{ position: [0, 0], quantity: 5 }],
     flags: [],
   };
@@ -142,10 +142,10 @@ describe('markFlagUseCase', () => {
   });
 
   const cases: CellModel[][] = [
-    [{ position: [2, 3], adjacentBombs: 0 }],
-    [{ position: [2, 3], adjacentBombs: 3 }],
-    [{ position: [2, 3], isBomb: false }],
-    [{ position: [2, 3], isBomb: true }],
+    [new CellModel([2, 3], { adjacentBombs: 0 })],
+    [new CellModel([2, 3], { adjacentBombs: 3 })],
+    [new CellModel([2, 3], { hasBomb: false })],
+    [new CellModel([2, 3], { hasBomb: true })],
   ];
 
   it.each(cases)(

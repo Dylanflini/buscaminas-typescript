@@ -1,16 +1,24 @@
-import { IPosition } from '@minesweeper/domain/commons.type';
+import { IPosition, TPosition } from '@minesweeper/domain/commons.type';
 
-export interface CellModel extends IPosition {
+export class CellModel implements IPosition {
   /**
    * represent internal state of cell
    *
    * if is "undefined" it means that the cell is not exposed and the user doesn't know if this cell is a bomb or not
    */
-  isBomb?: boolean;
+  public hasBomb?: boolean | undefined;
   /**
    * if is "undefined" it means the cell does not be exposed
    *
    * adjacent bombs only have a value from 0 to 8
    */
-  adjacentBombs?: number;
+  public adjacentBombs?: number | undefined;
+
+  constructor(public position: TPosition, config: Partial<CellModel> = {}) {
+    Object.assign(this, config);
+  }
+
+  public get isExposed(): boolean {
+    return this.adjacentBombs !== undefined || this.hasBomb !== undefined;
+  }
 }

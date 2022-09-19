@@ -1,4 +1,5 @@
 import { IDataRepository } from '@minesweeper/domain/data.repository';
+import { CellModel } from '@minesweeper/domain/models';
 import { dataRepository } from '@minesweeper/infrastructure/data';
 import { ErrorStartGame, startGameUseCase } from './startGame';
 
@@ -76,12 +77,12 @@ describe('start game', () => {
     const { cells } = await startGameUseCase(props);
 
     expect(cells).toStrictEqual([
-      { position: [0, 0] },
-      { position: [1, 0] },
-      { position: [2, 0] },
-      { position: [0, 1] },
-      { position: [1, 1] },
-      { position: [2, 1] },
+      new CellModel([0, 0]),
+      new CellModel([1, 0]),
+      new CellModel([2, 0]),
+      new CellModel([0, 1]),
+      new CellModel([1, 1]),
+      new CellModel([2, 1]),
     ]);
   });
 
@@ -91,7 +92,7 @@ describe('start game', () => {
     const { cells } = await startGameUseCase(props);
 
     const match = cells.every(
-      ({ adjacentBombs, isBomb }) => adjacentBombs === undefined && isBomb === undefined,
+      ({ adjacentBombs, hasBomb }) => adjacentBombs === undefined && hasBomb === undefined,
     );
 
     expect(match).toBe(true);

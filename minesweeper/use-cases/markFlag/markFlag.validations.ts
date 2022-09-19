@@ -25,9 +25,7 @@ export const makeValidations = (props: IMarkFlagProps, board: IMarkFlagResponse)
   return {
     OUTSIDE_BOARD: columnMarked > board.columns || rowMarked > board.rows,
     ALREADY_A_FLAG: board.flags.some(flag => samePosition(flag)),
-    CELL_ALREADY_EXPOSED: board.cells.some(
-      cell => (cell.adjacentBombs !== undefined || cell.isBomb !== undefined) && samePosition(cell),
-    ),
+    CELL_ALREADY_EXPOSED: board.cells.some(cell => cell.isExposed && samePosition(cell)),
     NO_FLAGS_AVAILABLE: board.flags_available === 0,
     NOT_NATURAL_NUMBER: !isNaturalNumber(columnMarked) || !isNaturalNumber(rowMarked),
   };
