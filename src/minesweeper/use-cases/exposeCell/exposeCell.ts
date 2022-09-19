@@ -30,7 +30,7 @@ export const exposeCellUseCase: IExposeCellUseCase = async props => {
 
     if (cellOnBomb) return cell; // If this happens game is lost. That will be checked in runExposeCellCases()
 
-    const adjacentCells = getAdjacentVertex(board.cells, cell) as Cell[];
+    const adjacentCells = getAdjacentVertex(board.cells, cell);
 
     adjacentCells.map(adjacentCell => {
       const matchedCounter = neighborsCounter.find(counter =>
