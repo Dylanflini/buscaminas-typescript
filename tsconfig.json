@@ -8,9 +8,9 @@
     "outDir": "public",
     "baseUrl": ".",
     "paths": {
-      "@minesweeper/*": ["minesweeper/*"],
-      "@game-board/*": ["game-board/*"]
+      "@minesweeper/*": ["src/minesweeper/*"],
+      "@game-board/*": ["src/game-board/*"]
     }
   },
-  "include": ["minesweeper", "game-board"]
+  "include": ["src"]
 }

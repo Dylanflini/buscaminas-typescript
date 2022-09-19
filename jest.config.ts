@@ -4,7 +4,7 @@ import { compilerOptions } from './tsconfig.json';
 
 const config: Config.InitialOptions = {
   watch: false,
-  roots: ['minesweeper'],
+  roots: ['src'],
   moduleNameMapper: {
     ...pathsToModuleNameMapper(compilerOptions.paths, {
       prefix: '<rootDir>/',

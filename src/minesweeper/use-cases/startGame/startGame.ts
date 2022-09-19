@@ -1,7 +1,7 @@
+import { BoardModel, CellModel } from '@minesweeper/domain/models';
+import { IRepositoryUseCase } from '@minesweeper/domain/data.repository';
 import { createBombs } from './createBombs';
 import { createNeighborsCounter } from './createNeighborsCounter';
-import { BoardModel, CellModel } from '@minesweeper/domain/models';
-import { IDataRepository } from '@minesweeper/domain/data.repository';
 
 export enum ErrorStartGame {
   BOMBS_GREATER_THAN_ZERO = 'bombs must be greater than 0',
@@ -12,8 +12,7 @@ export enum ErrorStartGame {
   DB_ERROR = 'error try saving board data',
 }
 
-interface IStartGameProps {
-  data: IDataRepository;
+interface IStartGameProps extends IRepositoryUseCase {
   rows: number;
   columns: number;
   bombs: number;
@@ -24,36 +23,22 @@ type IBoardResponse = Omit<BoardModel, 'bombs' | 'neighBorsBombsCounter'>;
 type IStartGameUseCase = (props: IStartGameProps) => Promise<IBoardResponse>;
 
 /**
- * start game base on initial props
+ * Start game base on initial props
  */
-
 export const startGameUseCase: IStartGameUseCase = async ({
   bombs: bombsInput,
   rows,
   columns,
-  data,
+  dataRepository,
 }) => {
-  if (bombsInput < 1) {
-    throw Error(ErrorStartGame.BOMBS_GREATER_THAN_ZERO);
-  }
-
-  if (rows < 1) {
-    throw Error(ErrorStartGame.ROWS_GREATER_THAN_ZERO);
-  }
-
-  if (columns < 1) {
-    throw Error(ErrorStartGame.COLUMNS_GREATER_THAN_ZERO);
-  }
-
-  if (rows < 2 && columns < 2) {
-    throw new Error(ErrorStartGame.ROWS_AND_COLUMNS_GREATER_THAN_ONE);
-  }
+  if (bombsInput < 1) throw Error(ErrorStartGame.BOMBS_GREATER_THAN_ZERO);
+  if (rows < 1) throw Error(ErrorStartGame.ROWS_GREATER_THAN_ZERO);
+  if (columns < 1) throw Error(ErrorStartGame.COLUMNS_GREATER_THAN_ZERO);
+  if (rows < 2 && columns < 2) throw new Error(ErrorStartGame.ROWS_AND_COLUMNS_GREATER_THAN_ONE);
 
   const totalCells = columns * rows;
 
-  if (bombsInput >= totalCells) {
-    throw Error(ErrorStartGame.BOMBS_GREATER_THAN_TOTAL_CELLS);
-  }
+  if (bombsInput >= totalCells) throw Error(ErrorStartGame.BOMBS_GREATER_THAN_TOTAL_CELLS);
 
   const cells: CellModel[] = [];
 
@@ -65,7 +50,7 @@ export const startGameUseCase: IStartGameUseCase = async ({
 
   const bombs = createBombs({ rows, columns, bombsInput });
 
-  const boardWithoutId: Omit<BoardModel, 'id'> = {
+  const boardWithoutId: Omit<BoardModel, 'boardId'> = {
     cells,
     bombs_available: bombsInput,
     bombs,
@@ -77,13 +62,13 @@ export const startGameUseCase: IStartGameUseCase = async ({
   };
 
   try {
-    const { id } = await data.createBoard(boardWithoutId);
+    const { boardId } = await dataRepository.createBoard(boardWithoutId);
 
     const { bombs, neighBorsBombsCounter, ...rest } = boardWithoutId;
 
     return {
       ...rest,
-      id,
+      boardId,
     };
   } catch (error) {
     console.error(error);
