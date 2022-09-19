@@ -50,11 +50,11 @@ describe('start game', () => {
   it('should return initial board', async () => {
     const props = { dataRepository, bombs: 2, columns: 3, rows: 2 };
 
-    const { id, cells, columns, rows, bombs_available, flags_available, flags } =
+    const { boardId, cells, columns, rows, bombs_available, flags_available, flags } =
       await startGameUseCase(props);
 
-    expect(id).toBeTruthy();
-    expect(id).not.toBe('');
+    expect(boardId).toBeTruthy();
+    expect(boardId).not.toBe('');
     expect(cells.length).toBe(props.columns * props.rows);
 
     expect(bombs_available).toBe(props.bombs);

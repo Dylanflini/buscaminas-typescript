@@ -1,8 +1,11 @@
-import { IBoardId } from '@minesweeper/lib/types';
 import { BombModel } from './Bomb.model';
 import { CellModel } from './Cell.model';
 import { FlagModel } from './Flag.model';
 import { NeighborsBombsCounter } from './NeighborsBombsCounter.model';
+
+export interface IBoardId {
+  boardId: string;
+}
 
 export interface BoardModel extends IBoardId {
   flags_available: number;
