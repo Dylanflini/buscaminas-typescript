@@ -16,14 +16,14 @@ export const dataRepository: IDataRepository = {
   },
 
   createBoard: async board => {
-    const id = (await resolve(createId())) as string;
+    const boardId = (await resolve(createId())) as string;
 
-    db = { ...board, id };
+    db = { ...board, boardId };
 
-    return { id };
+    return { boardId };
   },
 
-  getBoard: async ({ id }) => {
+  getBoard: async ({ boardId }) => {
     await resolve(db);
     return db;
   },

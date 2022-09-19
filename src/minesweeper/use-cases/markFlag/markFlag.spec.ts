@@ -10,11 +10,11 @@ describe('markFlagUseCase', () => {
   /**
    * Mock Data
    */
-  const boardId = { id: '111-222-333' };
+  const boardId = '111-222-333';
   const flagAvailableMocked = 20;
 
   const boardMocked: BoardModel = {
-    id: '111-222-333',
+    boardId,
     flags_available: flagAvailableMocked,
     bombs_available: 10,
     rows: 10,

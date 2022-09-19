@@ -1,19 +1,12 @@
-import { IPosition } from '@minesweeper/lib/types';
-import { getSamePosition } from './position';
+import { TPosition } from '@minesweeper/domain/models/Position.model';
+import { hasSamePosition } from './position';
 
 describe('Position util', () => {
   it('getSamePosition', () => {
-    const samePosition = getSamePosition(10, 5);
+    const validPosition: TPosition = [10, 5];
+    const invalidPosition: TPosition = [7, 3];
 
-    const validPosition: IPosition = {
-      position: [10, 5],
-    };
-
-    const invalidPosition: IPosition = {
-      position: [7, 3],
-    };
-
-    expect(samePosition(validPosition)).toBeTruthy();
-    expect(samePosition(invalidPosition)).toBeFalsy();
+    expect(hasSamePosition([10, 5], validPosition)).toBeTruthy();
+    expect(hasSamePosition([10, 5], invalidPosition)).toBeFalsy();
   });
 });

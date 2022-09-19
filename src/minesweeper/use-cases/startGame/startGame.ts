@@ -1,5 +1,5 @@
 import { BoardModel, CellModel } from '@minesweeper/domain/models';
-import { IRepositoryUseCase } from '@minesweeper/lib/interfaces';
+import { IRepositoryUseCase } from '@minesweeper/domain/data.repository';
 import { createBombs } from './createBombs';
 import { createNeighborsCounter } from './createNeighborsCounter';
 
@@ -50,7 +50,7 @@ export const startGameUseCase: IStartGameUseCase = async ({
 
   const bombs = createBombs({ rows, columns, bombsInput });
 
-  const boardWithoutId: Omit<BoardModel, 'id'> = {
+  const boardWithoutId: Omit<BoardModel, 'boardId'> = {
     cells,
     bombs_available: bombsInput,
     bombs,
@@ -62,13 +62,13 @@ export const startGameUseCase: IStartGameUseCase = async ({
   };
 
   try {
-    const { id } = await dataRepository.createBoard(boardWithoutId);
+    const { boardId } = await dataRepository.createBoard(boardWithoutId);
 
     const { bombs, neighBorsBombsCounter, ...rest } = boardWithoutId;
 
     return {
       ...rest,
-      id,
+      boardId,
     };
   } catch (error) {
     console.error(error);

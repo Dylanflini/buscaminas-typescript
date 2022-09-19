@@ -1,13 +1,17 @@
-import { IPosition } from '@minesweeper/lib/types';
-import { FlagModel } from '@minesweeper/domain/models';
+import { IPosition, TPosition } from '@minesweeper/domain/models';
 
-export const getSamePosition = (columnMarked: number, rowMarked: number) => {
-  const samePosition = ({ position: [column, row] }: IPosition) =>
-    column === columnMarked && row === rowMarked;
+type hasSamePosition = (
+  fistElementPosition: TPosition,
+  secondElementPosition: TPosition,
+) => boolean;
 
-  return samePosition;
+export const hasSamePosition: hasSamePosition = (fistElementPosition, secondElementPosition) => {
+  const [fistX, firstY] = fistElementPosition;
+  const [secondX, secondY] = secondElementPosition;
+
+  return fistX === secondX && firstY === secondY;
 };
 
-export const getPosition = (column: number, row: number): FlagModel => ({
+export const getPosition = (column: number, row: number): IPosition => ({
   position: [column, row],
 });

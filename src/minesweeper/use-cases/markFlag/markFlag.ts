@@ -1,9 +1,8 @@
-import { IPosition, WithBoardId } from '@minesweeper/lib/types';
-import { IRepositoryUseCase } from '@minesweeper/lib/interfaces';
-import { BoardModel } from '@minesweeper/domain/models';
+import { IRepositoryUseCase } from '@minesweeper/domain/data.repository';
+import { BoardModel, IPosition, IBoardId } from '@minesweeper/domain/models';
 import { makeValidations, MarkFlagUCError, GeneralError } from './markFlag.validations';
 
-export interface IMarkFlagProps extends IPosition, IRepositoryUseCase, WithBoardId {}
+export interface IMarkFlagProps extends IPosition, IRepositoryUseCase, IBoardId {}
 export type IMarkFlagResponse = BoardModel;
 export type IMarkFlagUseCase = (props: IMarkFlagProps) => Promise<IMarkFlagResponse>;
 
@@ -13,7 +12,7 @@ export type IMarkFlagUseCase = (props: IMarkFlagProps) => Promise<IMarkFlagRespo
  */
 export const markFlagUseCase: IMarkFlagUseCase = async props => {
   const { boardId, dataRepository, ...positionProps } = props;
-  const board = await dataRepository.getBoard(boardId);
+  const board = await dataRepository.getBoard({ boardId });
 
   const {
     ALREADY_A_FLAG,
