@@ -17,7 +17,7 @@ export const exposeCellUseCase: IExposeCellUseCase = async props => {
 
   runExposeCellValidations(props, board);
 
-  const neighborsCounter = createNeighborsCounter({
+  const neighborsCounter = board.neighBorsBombsCounter;
     cells: board.cells,
     bombs: board.bombs,
   });
