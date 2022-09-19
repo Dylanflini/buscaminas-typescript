@@ -1,6 +1,6 @@
 import { BoardModel } from '@minesweeper/domain/models';
 import { IDataRepository } from '@minesweeper/domain/data.repository';
-import { createId } from '@minesweeper/infrastructure/dependencies/uuid';
+import { createId } from '@minesweeper/infrastructure/id/createId';
 
 let db: BoardModel;
 

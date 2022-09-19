@@ -4,7 +4,7 @@ import { getPosition } from '@minesweeper/utils';
 import { markFlagUseCase, MarkFlagUCError, GeneralError } from './markFlag';
 
 jest.mock('@minesweeper/infrastructure/data');
-jest.mock('@minesweeper/infrastructure/dependencies/uuid');
+jest.mock('@minesweeper/infrastructure/id/createId');
 
 describe('markFlagUseCase', () => {
   /**
