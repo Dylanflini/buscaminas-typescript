@@ -1,7 +1,7 @@
 import { IRepositoryUseCase } from '@minesweeper/domain/data.repository';
-import { IPosition, IBoardId, PublicBoardModel, Cell } from '@minesweeper/domain/models';
-import { getAdjacentVertex, hasSamePosition } from '@minesweeper/utils';
-import { createNeighborsCounter } from '../startGame/createNeighborsCounter/createNeighborsCounter';
+import { IPosition, IBoardId, PublicBoardModel } from '@minesweeper/domain/models';
+import { hasSamePosition, hasSomeWithSamePosition } from '@minesweeper/utils';
+import { repeatablyExposeEmptyCells, updateStateOfAdjacentCells } from './exposeCell.helpers';
 import { runExposeCellValidations, runExposeCellCases } from './exposeCell.validations';
 
 export interface IExposeCellProps extends IPosition, IRepositoryUseCase, IBoardId {}
@@ -12,36 +12,24 @@ export type IExposeCellUseCase = (props: IExposeCellProps) => Promise<PublicBoar
  * position to signal that there should be a bomb there.
  */
 export const exposeCellUseCase: IExposeCellUseCase = async props => {
-  const { boardId, dataRepository, ...positionProps } = props;
+  const { boardId, dataRepository, ...position } = props;
   const board = await dataRepository.getBoard({ boardId });
 
   runExposeCellValidations(props, board);
 
-  const neighborsCounter = board.neighBorsBombsCounter;
-    cells: board.cells,
-    bombs: board.bombs,
-  });
-
   board.cells = board.cells.map(cell => {
-    if (!hasSamePosition(positionProps, cell)) return cell;
+    const isCellExposing = hasSamePosition(position, cell);
+    const hasBomb = hasSomeWithSamePosition(board.bombs, cell);
 
-    const cellOnBomb = board.bombs.some(bomb => hasSamePosition(bomb, cell));
-    cell.hasBomb = cellOnBomb;
+    cell.hasBomb = isCellExposing ? hasBomb : cell.hasBomb;
 
-    if (cellOnBomb) return cell; // If this happens game is lost. That will be checked in runExposeCellCases()
-
-    const adjacentCells = getAdjacentVertex(board.cells, cell);
-
-    adjacentCells.map(adjacentCell => {
-      const matchedCounter = neighborsCounter.find(counter =>
-        hasSamePosition(counter, adjacentCell),
-      );
-      if (matchedCounter) adjacentCell.adjacentBombs = matchedCounter.quantity;
-      return adjacentCell;
-    });
+    if (!isCellExposing || hasBomb) return cell;
+    updateStateOfAdjacentCells(board, cell);
 
     return cell;
   });
+
+  repeatablyExposeEmptyCells(board);
 
   runExposeCellCases(props, board);
 

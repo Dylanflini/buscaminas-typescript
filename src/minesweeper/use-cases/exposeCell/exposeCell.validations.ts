@@ -6,8 +6,6 @@ export enum ExposeCellUCCases {
   WON_GAME = '[Case] Game Won',
 }
 
-export enum ExposeCellUCError {}
-
 type TExposeCellValidationsProps = ValidationsList<'LOST_GAME' | 'WON_GAME'>;
 type TExposeCellValidations = ValidationType<IExposeCellProps, TExposeCellValidationsProps>;
 type IRunValidationsProps = ValidationType<IExposeCellProps, void>;
