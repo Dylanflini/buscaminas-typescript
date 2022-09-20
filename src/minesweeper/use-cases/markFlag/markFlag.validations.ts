@@ -1,12 +1,6 @@
 import { BoardModel } from '@minesweeper/domain/models';
-import { hasSamePosition } from '@minesweeper/utils';
+import { hasSamePosition, isNaturalNumber } from '@minesweeper/utils';
 import { IMarkFlagProps } from './markFlag';
-
-export const isNaturalNumber = (value: number) => {
-  const absoluteValue = Math.abs(value);
-  const integerValue = parseInt(value.toString(), 10);
-  return integerValue === value && integerValue === absoluteValue && absoluteValue === value;
-};
 
 export enum GeneralError {
   NOT_NATURAL_NUMBER = '[General Error] You only can add natural numbers (0,1,2,3,...)',
@@ -19,14 +13,20 @@ export enum MarkFlagUCError {
   NO_FLAGS_AVAILABLE = "[Error] You can't add a flag when you there is no flags available",
 }
 
-export const makeValidations = (props: IMarkFlagProps, board: BoardModel) => {
+export const makeValidations = (props: IMarkFlagProps, board: BoardModel): void => {
   const [columnMarked, rowMarked] = props.position;
 
-  return {
-    OUTSIDE_BOARD: columnMarked > board.columns || rowMarked > board.rows,
-    ALREADY_A_FLAG: board.flags.some(flag => hasSamePosition(flag, props)),
-    CELL_ALREADY_EXPOSED: board.cells.some(cell => cell.isExposed && hasSamePosition(cell, props)),
-    NO_FLAGS_AVAILABLE: board.flags_available === 0,
-    NOT_NATURAL_NUMBER: !isNaturalNumber(columnMarked) || !isNaturalNumber(rowMarked),
-  };
+  if (board.flags.some(flag => hasSamePosition(flag, props)))
+    throw Error(MarkFlagUCError.ALREADY_A_FLAG);
+
+  if (board.cells.some(cell => cell.isExposed && hasSamePosition(cell, props)))
+    throw Error(MarkFlagUCError.CELL_ALREADY_EXPOSED);
+
+  if (board.flags_available === 0) throw Error(MarkFlagUCError.NO_FLAGS_AVAILABLE);
+
+  if (columnMarked > board.columns || rowMarked > board.rows)
+    throw Error(MarkFlagUCError.OUTSIDE_BOARD);
+
+  if (!isNaturalNumber(columnMarked) || !isNaturalNumber(rowMarked))
+    throw Error(GeneralError.NOT_NATURAL_NUMBER);
 };
