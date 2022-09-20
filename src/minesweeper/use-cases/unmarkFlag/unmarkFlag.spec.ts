@@ -104,7 +104,7 @@ describe('unMarkFlagUseCase', () => {
     );
   });
 
-  it('should not add a flag when no exists flags in board', async () => {
+  it('should not unMark a flag when no exists flags in board', async () => {
     const board: BoardModel = {
       ...boardMocked,
       flags: [],
@@ -129,7 +129,7 @@ describe('unMarkFlagUseCase', () => {
   ];
 
   it.each(cases)(
-    'should not add a flag in a cell which is already exposed - (test n %#)',
+    'should not unMark a flag in a cell which is already exposed - (test n %#)',
     async cellExposed => {
       const newBoardMocked: BoardModel = {
         ...boardMocked,
