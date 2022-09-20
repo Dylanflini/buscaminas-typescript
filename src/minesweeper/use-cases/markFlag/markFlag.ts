@@ -10,12 +10,12 @@ export type IMarkFlagUseCase = (props: IMarkFlagProps) => Promise<PublicBoardMod
  * position to signal that there should be a bomb there.
  */
 export const markFlagUseCase: IMarkFlagUseCase = async props => {
-  const { boardId, dataRepository, ...positionProps } = props;
+  const { boardId, dataRepository, position } = props;
   const board = await dataRepository.getBoard({ boardId });
 
   runMarkFlagValidations(props, board);
 
-  board.flags.push(positionProps); // not tested enough
+  board.flags.push({ position }); // not tested enough
   board.flags_available = board.flags_available - 1;
 
   await dataRepository.saveBoard(board);

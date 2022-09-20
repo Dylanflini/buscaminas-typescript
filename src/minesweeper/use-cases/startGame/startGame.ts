@@ -2,15 +2,7 @@ import { IRepositoryUseCase } from '@minesweeper/domain/data.repository';
 import { BoardModel, Cell, PublicBoardModel } from '@minesweeper/domain/models';
 import { createBombs } from './createBombs/createBombs';
 import { createNeighborsCounter } from './createNeighborsCounter/createNeighborsCounter';
-
-export enum ErrorStartGame {
-  BOMBS_GREATER_THAN_ZERO = 'bombs must be greater than 0',
-  ROWS_GREATER_THAN_ZERO = 'rows must be greater than 0',
-  COLUMNS_GREATER_THAN_ZERO = 'columns must be greater than 0',
-  ROWS_AND_COLUMNS_GREATER_THAN_ONE = 'rows and columns must be greater than 1',
-  BOMBS_GREATER_THAN_TOTAL_CELLS = 'bombs must be less than total cells',
-  DB_ERROR = 'error try saving board data',
-}
+import { makeValidations } from './startGame.validations';
 
 interface IStartGameProps extends IRepositoryUseCase {
   rows: number;
@@ -29,14 +21,7 @@ export const startGameUseCase: IStartGameUseCase = async ({
   columns,
   dataRepository,
 }) => {
-  if (bombsInput < 1) throw Error(ErrorStartGame.BOMBS_GREATER_THAN_ZERO);
-  if (rows < 1) throw Error(ErrorStartGame.ROWS_GREATER_THAN_ZERO);
-  if (columns < 1) throw Error(ErrorStartGame.COLUMNS_GREATER_THAN_ZERO);
-  if (rows < 2 && columns < 2) throw new Error(ErrorStartGame.ROWS_AND_COLUMNS_GREATER_THAN_ONE);
-
-  const totalCells = columns * rows;
-
-  if (bombsInput >= totalCells) throw Error(ErrorStartGame.BOMBS_GREATER_THAN_TOTAL_CELLS);
+  makeValidations(bombsInput, rows, columns);
 
   const cells: Cell[] = [];
 
@@ -59,17 +44,12 @@ export const startGameUseCase: IStartGameUseCase = async ({
     neighBorsBombsCounter: createNeighborsCounter({ cells, bombs }),
   };
 
-  try {
-    const { boardId } = await dataRepository.createBoard(boardWithoutId);
+  const { boardId } = await dataRepository.createBoard(boardWithoutId);
 
-    const { bombs, neighBorsBombsCounter, ...rest } = boardWithoutId;
-
-    return {
-      ...rest,
-      boardId,
-    };
-  } catch (error) {
-    console.error(error);
-    throw Error(ErrorStartGame.DB_ERROR);
-  }
+  return {
+    boardId,
+    cells,
+    flags: boardWithoutId.flags,
+    flags_available: boardWithoutId.flags_available,
+  };
 };
