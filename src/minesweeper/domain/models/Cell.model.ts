@@ -8,7 +8,7 @@ export class Cell implements IPosition {
    */
   public hasBomb?: boolean | undefined;
   /**
-   * if is "undefined" it means the cell does not be exposed
+   * if is "undefined" it means the cell is not exposed
    *
    * adjacent bombs only have a value from 0 to 8
    */

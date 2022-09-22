@@ -1,6 +1,6 @@
 import { IRepositoryUseCase } from '@minesweeper/domain/data.repository';
 import { IPosition, IBoardId, PublicBoardModel } from '@minesweeper/domain/models';
-import { makeValidations } from './markFlag.validations';
+import { runMarkFlagValidations } from './markFlag.validations';
 
 export interface IMarkFlagProps extends IPosition, IRepositoryUseCase, IBoardId {}
 export type IMarkFlagUseCase = (props: IMarkFlagProps) => Promise<PublicBoardModel>;
@@ -13,7 +13,7 @@ export const markFlagUseCase: IMarkFlagUseCase = async props => {
   const { boardId, dataRepository, position } = props;
   const board = await dataRepository.getBoard({ boardId });
 
-  makeValidations(props, board);
+  runMarkFlagValidations(props, board);
 
   board.flags.push({ position }); // not tested enough
   board.flags_available = board.flags_available - 1;
