@@ -1,13 +1,12 @@
-import { BombModel, Cell } from '@minesweeper/domain/models';
+import { BombModel } from '@minesweeper/domain/models';
+import { cells2x2 } from '@minesweeper/utils/mocks';
 import { createNeighborsCounter } from './createNeighborsCounter';
 
 describe('create neighbors', () => {
-  const cells: Cell[] = [new Cell([0, 0]), new Cell([1, 0]), new Cell([0, 1]), new Cell([1, 1])];
-
   it('should return correct neighbor counter if board have 1', () => {
     const bombs: BombModel[] = [{ position: [0, 0] }];
 
-    const neighbors = createNeighborsCounter({ cells, bombs });
+    const neighbors = createNeighborsCounter({ cells: cells2x2, bombs });
 
     const found = neighbors.find(n => n.quantity === 1);
 
@@ -24,7 +23,7 @@ describe('create neighbors', () => {
   it('should return correct neighbors counter if board have 2 bombs', () => {
     const bombs: BombModel[] = [{ position: [0, 0] }, { position: [1, 1] }];
 
-    const neighbors = createNeighborsCounter({ cells, bombs });
+    const neighbors = createNeighborsCounter({ cells: cells2x2, bombs });
 
     const found = neighbors.find(n => n.quantity === 2);
 
@@ -41,7 +40,7 @@ describe('create neighbors', () => {
   it('should return correct neighbors counter if board have 3 bombs', () => {
     const bombs: BombModel[] = [{ position: [0, 0] }, { position: [1, 0] }, { position: [1, 1] }];
 
-    const neighbors = createNeighborsCounter({ cells, bombs });
+    const neighbors = createNeighborsCounter({ cells: cells2x2, bombs });
 
     const found = neighbors.find(n => n.quantity === 3);
 
@@ -58,7 +57,7 @@ describe('create neighbors', () => {
   it('should return correct neighbors counter if board have 2 bombs (v2)', () => {
     const bombs: BombModel[] = [{ position: [0, 0] }, { position: [1, 0] }, { position: [0, 1] }];
 
-    const neighbors = createNeighborsCounter({ cells, bombs });
+    const neighbors = createNeighborsCounter({ cells: cells2x2, bombs });
 
     expect(neighbors).toStrictEqual([
       { position: [0, 0], quantity: 2 },
