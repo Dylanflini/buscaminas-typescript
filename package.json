@@ -4,9 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "node dist/index.js",
+    "dev": "node serve.js",
+    "build": "node build.js",
     "test": "jest",
-    "build": "esbuild minesweeper/infrastructure/ui/index.ts --bundle --outfile=public/index.js",
-    "dev": "esbuild minesweeper/infrastructure/ui/index.ts --bundle --outfile=public/index.js --watch ",
     "husky": "npm run format && npm run lint",
     "format": "pretty-quick --staged",
     "lint": "tsc && npm run eslint:staged",
@@ -23,9 +24,11 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/supertest": "^2.0.12",
     "@types/uuid": "^8.3.4",
     "@typescript-eslint/eslint-plugin": "5.6.0",
     "@typescript-eslint/parser": "5.6.0",
+    "dotenv": "16.0.2",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "8.5.0",
     "eslint-formatter-summary-chart": "0.2.1",
@@ -34,8 +37,10 @@
     "eslint-plugin-prettier": "4.2.1",
     "husky": "^8.0.1",
     "lint-staged": "13.0.3",
+    "nodemon": "2.0.20",
     "prettier": "2.7.1",
-    "pretty-quick": "2.0.2"
+    "pretty-quick": "2.0.2",
+    "supertest": "6.2.4"
   },
   "dependencies": {
     "@types/jest": "^27.4.1",
