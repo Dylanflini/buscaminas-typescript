@@ -1,26 +1,15 @@
 import { IDataRepository } from '@minesweeper/domain/data.repository';
 import { BoardModel, Cell } from '@minesweeper/domain/models';
 import { dataRepository } from '@minesweeper/infrastructure/data';
-import { unMarkFlagUseCase, MarkFlagUCError, GeneralError } from './unMarkFlag';
+import { unMarkFlagUseCase, MarkFlagUCError } from './unMarkFlag';
+import { boardId, boardMocked } from '@minesweeper/utils/mocks';
+import { GeneralError } from '../validations';
 
 describe('unMarkFlagUseCase', () => {
   /**
    * Mock Data
    */
-  const boardId = '111-222-333';
   const flagAvailableMocked = 1;
-
-  const boardMocked: BoardModel = {
-    boardId,
-    flags_available: flagAvailableMocked,
-    bombs_available: 2,
-    rows: 10,
-    columns: 10,
-    bombs: [{ position: [0, 0] }],
-    cells: [new Cell([0, 0]), new Cell([1, 0]), new Cell([0, 1]), new Cell([1, 1])],
-    neighBorsBombsCounter: [{ position: [0, 0], quantity: 5 }],
-    flags: [{ position: [0, 0] }, { position: [1, 0] }],
-  };
 
   /**
    * Test commons
@@ -29,7 +18,12 @@ describe('unMarkFlagUseCase', () => {
   const newDataRepository: IDataRepository = {
     ...dataRepository,
     saveBoard: () => Promise.resolve(),
-    getBoard: () => Promise.resolve(boardMocked),
+    getBoard: () =>
+      Promise.resolve({
+        ...boardMocked,
+        flags_available: flagAvailableMocked,
+        flags: [{ position: [0, 0] }, { position: [1, 0] }],
+      }),
   };
 
   const commonProps = {
@@ -79,7 +73,7 @@ describe('unMarkFlagUseCase', () => {
     'should not unMark flag in a position outside the limits of the board - (test n %#)',
     async (x, y) => {
       await expect(unMarkFlagUseCase({ position: [x, y], ...commonProps })).rejects.toThrowError(
-        MarkFlagUCError.OUTSIDE_BOARD,
+        GeneralError.OUTSIDE_BOARD,
       );
     },
   );
@@ -149,7 +143,7 @@ describe('unMarkFlagUseCase', () => {
           boardId,
           dataRepository: newDataRepository,
         }),
-      ).rejects.toEqual(expect.objectContaining({ message: MarkFlagUCError.CELL_ALREADY_EXPOSED }));
+      ).rejects.toEqual(expect.objectContaining({ message: GeneralError.CELL_ALREADY_EXPOSED }));
     },
   );
 });

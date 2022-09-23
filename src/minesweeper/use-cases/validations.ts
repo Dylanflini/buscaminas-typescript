@@ -1,11 +1,10 @@
-import { BoardModel } from '@minesweeper/domain/models';
+import { BoardModel, IPosition } from '@minesweeper/domain/models';
 import { hasSamePosition, isNaturalNumber } from '@minesweeper/utils';
-import { IMarkFlagProps } from './markFlag/markFlag';
 
 export enum GeneralError {
   NOT_NATURAL_NUMBER = '[General Error] You only can add natural numbers (0,1,2,3,...)',
-  CELL_ALREADY_EXPOSED = "[Error] You can't add a flag / expose a cell  where there is an already exposed cell",
-  OUTSIDE_BOARD = "[Error] You can't add a flag / expose a cell outside the columns and rows of the board",
+  CELL_ALREADY_EXPOSED = '[Error] You cannot do any action where there is an already exposed cell',
+  OUTSIDE_BOARD = '[Error] You cannot do any action outside the columns and rows of the board',
 }
 
 /**
@@ -20,8 +19,8 @@ export type ValidationType<PropsType, Type> = (props: PropsType, board: BoardMod
 type TValidationsProps = ValidationsList<
   'OUTSIDE_BOARD' | 'CELL_ALREADY_EXPOSED' | 'NOT_NATURAL_NUMBER'
 >;
-type TMakeValidations = ValidationType<IMarkFlagProps, TValidationsProps>;
-type IRunValidationsProps = ValidationType<IMarkFlagProps, void>;
+type TMakeValidations = ValidationType<IPosition, TValidationsProps>;
+type IRunValidationsProps = ValidationType<IPosition, void>;
 
 /**
  * Validations
