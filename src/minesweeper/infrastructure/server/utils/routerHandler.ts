@@ -1,5 +1,6 @@
 import { IncomingMessage, ServerResponse } from 'http';
 import { RequestListener } from '../types';
+import { ServerError, ServerErrorMessages } from './validations';
 
 export const Router = () => {
   const routes: Record<any, RequestListener> = {};
@@ -11,14 +12,14 @@ export const Router = () => {
     routes[`POST-${route}`] = callback;
   };
 
-  const execRoute = async (req: IncomingMessage, res: ServerResponse): Promise<boolean> => {
+  const execRoute = async (req: IncomingMessage, res: ServerResponse): Promise<void> => {
     const foundRoute = routes[`${req.method || ''}-${req.url || ''}`];
 
     if (typeof foundRoute === 'function') {
       await foundRoute(req, res);
-      return true;
     }
-    return false;
+
+    throw new ServerError(404, ServerErrorMessages.NOT_FOUND);
   };
   return {
     get,

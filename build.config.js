@@ -4,7 +4,7 @@ const serverConfig = {
   platform: 'node',
   target: 'node14', //depend of the deploy server
   format: 'cjs',
-  outdir: 'dist',
+  outfile: 'dist/index.js',
 };
 
 module.exports = {
