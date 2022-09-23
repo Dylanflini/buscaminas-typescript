@@ -1,4 +1,3 @@
-import { IncomingMessage, ServerResponse } from 'http';
 import { RequestListener } from '../types';
 import { ServerError, ServerErrorMessages } from './validations';
 
@@ -14,7 +13,6 @@ interface Route {
 }
 
 type RouteHandler = (route: string, callback: RequestListener) => void;
-type ExecRoute = (req: IncomingMessage, res: ServerResponse) => Promise<void>;
 
 export const Router = () => {
   const routes: Route[] = [];
@@ -27,7 +25,7 @@ export const Router = () => {
     routes.push({ method: Methods.POST, route, callback });
   };
 
-  const execRoute: ExecRoute = async (req, res) => {
+  const execRoute: RequestListener = (req, res) => {
     const foundRoute = routes.find(
       ({ method, route }) => method === req.method && route === req.url,
     );
