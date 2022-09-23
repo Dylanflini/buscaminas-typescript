@@ -16,7 +16,7 @@ export const Router = () => {
     const foundRoute = routes[`${req.method || ''}-${req.url || ''}`];
 
     if (typeof foundRoute === 'function') {
-      await foundRoute(req, res);
+      return foundRoute(req, res);
     }
 
     throw new ServerError(404, ServerErrorMessages.NOT_FOUND);
