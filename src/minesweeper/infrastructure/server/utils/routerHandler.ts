@@ -26,8 +26,10 @@ export const Router = () => {
   };
 
   const execRoute: RequestListener = (req, res) => {
+    const url = new URL(req.url || '', `http://${req.headers.host || ''}`);
+
     const foundRoute = routes.find(
-      ({ method, route }) => method === req.method && route === req.url,
+      ({ method, route }) => method === req.method && route === url.pathname,
     );
 
     if (foundRoute) {

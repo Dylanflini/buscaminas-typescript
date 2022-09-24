@@ -34,7 +34,7 @@ export const startGameUseCase: IStartGameUseCase = async ({
   const bombs = createBombs({ rows, columns, bombsInput });
 
   const boardWithoutId: Omit<BoardModel, 'boardId'> = {
-    cells,
+    cells: [...cells],
     bombs_available: bombsInput,
     bombs,
     rows,
