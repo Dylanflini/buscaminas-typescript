@@ -1,6 +1,7 @@
 import { IRepositoryUseCase } from '@minesweeper/domain/data.repository';
-import { BoardModel, Cell, PublicBoardModel } from '@minesweeper/domain/models';
+import { BoardModel, PublicBoardModel } from '@minesweeper/domain/models';
 import { createBombs } from './createBombs/createBombs';
+import { createCells } from './createCells/createCells';
 import { createNeighborsCounter } from './createNeighborsCounter/createNeighborsCounter';
 import { makeValidations } from './startGame.validations';
 
@@ -23,13 +24,7 @@ export const startGameUseCase: IStartGameUseCase = async ({
 }) => {
   makeValidations(bombsInput, rows, columns);
 
-  const cells: Cell[] = [];
-
-  for (let y = 0; y < rows; y++) {
-    for (let x = 0; x < columns; x++) {
-      cells.push(new Cell([x, y]));
-    }
-  }
+  const cells = createCells({ rows, columns });
 
   const bombs = createBombs({ rows, columns, bombsInput });
 
