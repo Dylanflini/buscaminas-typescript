@@ -1,36 +1,52 @@
+import { IDataRepository } from '@minesweeper/domain/data.repository';
+import { BoardModel, BombModel } from '@minesweeper/domain/models';
 import { dataRepository } from '@minesweeper/infrastructure/data';
-import { startGameUseCase } from '@minesweeper/use-cases/startGame/startGame';
-import { boardId } from '@minesweeper/utils/mocks';
-import * as numberUtils from '@minesweeper/utils/numbers/numbers';
+import { boardId, boardMocked } from '@minesweeper/utils/mocks';
+import { createCells } from '../startGame/createCells/createCells';
+import { createNeighborsCounter } from '../startGame/createNeighborsCounter/createNeighborsCounter';
 import { ExposeCellUCCases, exposeCellUseCase } from './exposeCell';
 
 describe('Expose cell', () => {
-  const commonProps = {
-    boardId,
-    dataRepository,
-  };
-
   describe('With a bomb there', () => {
     it('Should lost the game when exposing a cell with a bomb there', async () => {
-      (numberUtils.getRandomNumber as jest.Mock) = jest.fn().mockReturnValue(0);
+      const newBoard: BoardModel = {
+        ...boardMocked,
+        cells: createCells({ rows: 3, columns: 3 }),
+        bombs: [{ position: [0, 0] }],
+      };
 
-      const props = { dataRepository, bombs: 1, columns: 3, rows: 3 };
+      const newDataRepository: IDataRepository = {
+        ...dataRepository,
+        getBoard: () => Promise.resolve(newBoard),
+      };
 
-      await startGameUseCase(props);
-
-      await expect(exposeCellUseCase({ position: [0, 0], ...commonProps })).rejects.toEqual(
-        expect.objectContaining({ message: ExposeCellUCCases.LOST_GAME }),
-      );
+      await expect(
+        exposeCellUseCase({ position: [0, 0], dataRepository: newDataRepository, boardId }),
+      ).rejects.toEqual(expect.objectContaining({ message: ExposeCellUCCases.LOST_GAME }));
     });
   });
+
   describe('Without a bomb there', () => {
     it('Should expose all adjacent cells if there is not bombs in none of there sides', async () => {
-      (numberUtils.getRandomNumber as jest.Mock) = jest.fn().mockReturnValue(2);
+      const bombs: BombModel[] = [{ position: [2, 2] }];
+      const boardCells = createCells({ rows: 3, columns: 3 });
 
-      const props = { dataRepository, bombs: 1, columns: 3, rows: 3 };
+      const newBoard: BoardModel = {
+        ...boardMocked,
+        bombs,
+        cells: boardCells,
+        neighBorsBombsCounter: createNeighborsCounter({ bombs, cells: boardCells }),
+      };
+      const newDataRepository: IDataRepository = {
+        ...dataRepository,
+        getBoard: () => Promise.resolve(newBoard),
+      };
 
-      await startGameUseCase(props);
-      const { cells } = await exposeCellUseCase({ position: [0, 0], ...commonProps });
+      const { cells } = await exposeCellUseCase({
+        position: [0, 0],
+        dataRepository: newDataRepository,
+        boardId,
+      });
 
       expect(cells[0].isExposed).toBeTruthy(); // 0 0 Selected
       expect(cells[1].isExposed).toBeTruthy(); // 1 0
@@ -39,12 +55,26 @@ describe('Expose cell', () => {
     });
 
     it('Should expose all adjacent cells indefinitely if there is not bombs in none of there sides until a cell with bombs in any of its sides is found', async () => {
-      (numberUtils.getRandomNumber as jest.Mock) = jest.fn().mockReturnValue(2);
+      const bombs: BombModel[] = [{ position: [2, 2] }];
+      const boardCells = createCells({ rows: 3, columns: 4 });
 
-      const props = { dataRepository, bombs: 1, columns: 4, rows: 3 };
+      const newBoard: BoardModel = {
+        ...boardMocked,
+        bombs,
+        cells: boardCells,
+        neighBorsBombsCounter: createNeighborsCounter({ bombs, cells: boardCells }),
+      };
 
-      await startGameUseCase(props);
-      const { cells } = await exposeCellUseCase({ position: [0, 0], ...commonProps });
+      const newDataRepository: IDataRepository = {
+        ...dataRepository,
+        getBoard: () => Promise.resolve(newBoard),
+      };
+
+      const { cells } = await exposeCellUseCase({
+        position: [0, 0],
+        dataRepository: newDataRepository,
+        boardId,
+      });
 
       const [
         cell0x0,
@@ -98,14 +128,24 @@ describe('Expose cell', () => {
       expect(cell3x2.isExposed).toBeFalsy();
     });
     it('Should show the number with the quantity of adjacent bombs of a cell if there are bombs in any of its sides', async () => {
-      (numberUtils.getRandomNumber as jest.Mock) = jest.fn().mockReturnValue(2); // Bomb will be in 2,2
+      const bombs: BombModel[] = [{ position: [2, 2] }];
+      const boardCells = createCells({ rows: 3, columns: 3 });
 
-      const props = { dataRepository, bombs: 1, columns: 3, rows: 3 };
+      const newBoard: BoardModel = {
+        ...boardMocked,
+        bombs,
+        cells: boardCells,
+        neighBorsBombsCounter: createNeighborsCounter({ bombs, cells: boardCells }),
+      };
 
-      await startGameUseCase(props);
+      const newDataRepository: IDataRepository = {
+        ...dataRepository,
+        getBoard: () => Promise.resolve(newBoard),
+      };
+
       const {
         cells: [cell0x0, cell1x0, cell2x0, cell0x1, cell1x1, cell2x1, cell0x2, cell1x2, cell2x2],
-      } = await exposeCellUseCase({ position: [0, 0], ...commonProps });
+      } = await exposeCellUseCase({ position: [0, 0], dataRepository: newDataRepository, boardId });
 
       /**
        * X|0|0
@@ -133,16 +173,26 @@ describe('Expose cell', () => {
       expect(cell2x2.hasBomb).toBeUndefined();
       expect(cell2x2.isExposed).toBe(false);
     });
+
     it('Should win the game when exposing the last cell without bombs', async () => {
-      (numberUtils.getRandomNumber as jest.Mock) = jest.fn().mockReturnValue(2); // Bomb will be in 1,1
+      const bombs: BombModel[] = [{ position: [2, 2] }]; // revisar, la bomba esta fuera del tablero
+      const boardCells = createCells({ rows: 2, columns: 2 });
 
-      const props = { dataRepository, bombs: 1, columns: 2, rows: 2 };
+      const newBoard: BoardModel = {
+        ...boardMocked,
+        bombs,
+        cells: boardCells,
+        neighBorsBombsCounter: createNeighborsCounter({ bombs, cells: boardCells }),
+      };
 
-      await startGameUseCase(props);
+      const newDataRepository: IDataRepository = {
+        ...dataRepository,
+        getBoard: () => Promise.resolve(newBoard),
+      };
 
-      await expect(exposeCellUseCase({ position: [0, 0], ...commonProps })).rejects.toEqual(
-        expect.objectContaining({ message: ExposeCellUCCases.WON_GAME }),
-      );
+      await expect(
+        exposeCellUseCase({ position: [0, 0], dataRepository: newDataRepository, boardId }),
+      ).rejects.toEqual(expect.objectContaining({ message: ExposeCellUCCases.WON_GAME }));
     });
   });
 });
