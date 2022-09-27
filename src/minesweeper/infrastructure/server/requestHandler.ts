@@ -12,7 +12,7 @@ export const requestHandler: RequestListener = async (req, res) => {
 
     if (error instanceof ServerError) {
       res.statusCode = error.code;
-      res.write(JSON.stringify({ message: error.message })); //se puede mejorar
+      res.write(JSON.stringify({ message: error.message })); //To Do, error handling
       return res.end();
     }
 
