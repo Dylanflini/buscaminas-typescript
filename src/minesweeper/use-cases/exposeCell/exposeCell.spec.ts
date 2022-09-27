@@ -50,24 +50,29 @@ describe('Expose cell', () => {
         cell0x0,
         cell1x0,
         cell2x0,
+        cell3x0,
 
         cell0x1,
         cell1x1,
         cell2x1,
+        cell3x1,
 
         cell0x2,
         cell1x2,
         cell2x2,
-
-        cell0x3,
-        cell1x3,
-        cell2x3,
+        cell3x2,
       ] = cells;
 
       /**
        * X|0|0|0
        * 0|1|1|1
        * 0|1|B|?
+       */
+
+      /**
+       * 0x0|1x0|2x0|3x0
+       * 0x1|1x1|2x1|3x1
+       * 0x2|1x2|2x2|3x2
        */
 
       // Selected
@@ -80,14 +85,17 @@ describe('Expose cell', () => {
 
       // Strangers
       expect(cell2x0.isExposed).toBeTruthy();
+      expect(cell3x0.isExposed).toBeTruthy();
+
       expect(cell2x1.isExposed).toBeTruthy();
+      expect(cell3x1.isExposed).toBeTruthy();
 
       expect(cell0x2.isExposed).toBeTruthy();
       expect(cell1x2.isExposed).toBeTruthy();
 
       // Not exposed
       expect(cell2x2.isExposed).toBeFalsy();
-      expect(cell2x3.isExposed).toBeFalsy();
+      expect(cell3x2.isExposed).toBeFalsy();
     });
     it('Should show the number with the quantity of adjacent bombs of a cell if there are bombs in any of its sides', async () => {
       (numberUtils.getRandomNumber as jest.Mock) = jest.fn().mockReturnValue(2); // Bomb will be in 2,2
@@ -95,12 +103,35 @@ describe('Expose cell', () => {
       const props = { dataRepository, bombs: 1, columns: 3, rows: 3 };
 
       await startGameUseCase(props);
-      const { cells } = await exposeCellUseCase({ position: [0, 0], ...commonProps });
+      const {
+        cells: [cell0x0, cell1x0, cell2x0, cell0x1, cell1x1, cell2x1, cell0x2, cell1x2, cell2x2],
+      } = await exposeCellUseCase({ position: [0, 0], ...commonProps });
 
-      expect(cells[0].adjacentBombs).toBe(0);
-      expect(cells[1].adjacentBombs).toBe(0);
-      expect(cells[3].adjacentBombs).toBe(0);
-      expect(cells[4].adjacentBombs).toBe(1);
+      /**
+       * X|0|0
+       * 0|1|1
+       * 0|1|B
+       */
+
+      /**
+       * 0x0|1x0|2x0
+       * 0x1|1x1|2x1
+       * 0x2|1x2|2x2
+       */
+
+      expect(cell0x0.adjacentBombs).toBe(0);
+      expect(cell1x0.adjacentBombs).toBe(0);
+      expect(cell2x0.adjacentBombs).toBe(0);
+
+      expect(cell0x1.adjacentBombs).toBe(0);
+      expect(cell1x1.adjacentBombs).toBe(1);
+      expect(cell2x1.adjacentBombs).toBe(1);
+
+      expect(cell0x2.adjacentBombs).toBe(0);
+      expect(cell1x2.adjacentBombs).toBe(1);
+      expect(cell2x2.adjacentBombs).toBeUndefined();
+      expect(cell2x2.hasBomb).toBeUndefined();
+      expect(cell2x2.isExposed).toBe(false);
     });
     it('Should win the game when exposing the last cell without bombs', async () => {
       (numberUtils.getRandomNumber as jest.Mock) = jest.fn().mockReturnValue(2); // Bomb will be in 1,1
