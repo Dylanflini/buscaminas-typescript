@@ -2,23 +2,23 @@ import router from './router';
 import { RequestListener } from 'http';
 import { ServerError } from './utils/validations';
 
-export const requestHandler: RequestListener = async (req, res) => {
+export const requestHandler: RequestListener = async (request, response) => {
   try {
-    res.setHeader('Access-Control-Allow-Origin', '*'); //change for environment
-    res.setHeader('Content-Type', 'application/json');
-    await router.execRoute(req, res);
+    response.setHeader('Access-Control-Allow-Origin', '*'); //change for environment
+    response.setHeader('Content-Type', 'application/json');
+    await router.execRoute(request, response);
   } catch (error) {
     // error handling
     console.error(error);
 
     if (error instanceof ServerError) {
       const { code, message } = error;
-      res.statusCode = code;
-      res.write(JSON.stringify({ message })); //se puede mejorar
-      return res.end();
+      response.statusCode = code;
+      response.write(JSON.stringify({ message })); //se puede mejorar
+      return response.end();
     }
 
-    res.statusCode = 500;
-    res.end();
+    response.statusCode = 500;
+    response.end();
   }
 };

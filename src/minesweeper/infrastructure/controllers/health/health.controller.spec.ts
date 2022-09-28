@@ -6,9 +6,9 @@ describe('health controller', () => {
   it('should return correct data', async () => {
     const server = createServer(requestHandler);
 
-    const res = await request(server).get('/health');
+    const response = await request(server).get('/health');
 
-    expect(res.statusCode).toBe(200);
-    expect(res.body).toStrictEqual({ status: 'up' });
+    expect(response.statusCode).toBe(200);
+    expect(response.body).toStrictEqual({ status: 'up' });
   });
 });

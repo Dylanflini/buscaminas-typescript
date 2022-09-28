@@ -25,18 +25,20 @@ export const Router = () => {
     routes.push({ method: Methods.POST, url, callback });
   };
 
-  const execRoute: RequestListener = (req, res) => {
-    const url = req.url || '';
-    const host = req.headers.host || '';
+  const execRoute: RequestListener = (request, response) => {
+    const url = request.url || '';
+    const host = request.headers.host || '';
 
     const { pathname } = new URL(url, `http://${host}`);
 
     const hasRoute = routes.some(({ url }) => url === pathname);
-    const foundRoute = routes.find(({ method, url }) => method === req.method && url === pathname);
+    const foundRoute = routes.find(
+      ({ method, url }) => method === request.method && url === pathname,
+    );
 
     if (hasRoute) {
       if (foundRoute) {
-        return foundRoute.callback(req, res);
+        return foundRoute.callback(request, response);
       }
 
       throw new ServerError(405, ServerErrorMessages.METHOD_NOT_ALLOWED);

@@ -1,11 +1,11 @@
 import { IncomingMessage } from 'http';
 
-const getBody = async (readableStream: IncomingMessage): Promise<any> =>
+const getBody = async (request: IncomingMessage): Promise<any> =>
   new Promise((resolve, reject) => {
     let data = '';
-    readableStream.on('data', chunk => (data += chunk));
-    readableStream.on('error', error => reject(error));
-    readableStream.on('end', () => {
+    request.on('data', chunk => (data += chunk));
+    request.on('error', error => reject(error));
+    request.on('end', () => {
       resolve(JSON.parse(data));
     });
   });

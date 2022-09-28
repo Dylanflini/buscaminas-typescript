@@ -5,14 +5,14 @@ import { ServerError } from '@minesweeper/infrastructure/server/utils/validation
 import { startGameUseCase } from '@minesweeper/use-cases/startGame/startGame';
 import { MinesweeperError } from '@minesweeper/use-cases/validations';
 
-export const startGameController: RequestListener = async (req, res) => {
-  const searchParams = getQueryParams(req);
-
-  const rows = Number(searchParams.get('rows'));
-  const columns = Number(searchParams.get('columns'));
-  const bombs = Number(searchParams.get('bombs'));
-
+export const startGameController: RequestListener = async (request, response) => {
   try {
+    const searchParams = getQueryParams(request);
+
+    const rows = Number(searchParams.get('rows'));
+    const columns = Number(searchParams.get('columns'));
+    const bombs = Number(searchParams.get('bombs'));
+
     const { cells, boardId } = await startGameUseCase({
       bombs,
       columns,
@@ -20,14 +20,16 @@ export const startGameController: RequestListener = async (req, res) => {
       dataRepository,
     });
 
-    res.statusCode = 200;
-    res.write(
+    response.statusCode = 200;
+
+    response.write(
       JSON.stringify({
         id: boardId,
         cells: cells.map(cell => ({ ...cell, isExposed: cell.isExposed })),
       }),
     );
-    res.end();
+
+    response.end();
   } catch (error) {
     console.log(error);
     if (error instanceof MinesweeperError) {

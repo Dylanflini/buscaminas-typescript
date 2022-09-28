@@ -1,4 +1,8 @@
-import { exposeCellController, healthController, startGameController } from '../controllers';
+import {
+  exposeCellController,
+  healthController,
+  startGameController,
+} from '@minesweeper/infrastructure/controllers';
 import { Router } from './utils/routerHandler';
 
 const router = Router();

@@ -1,9 +1,9 @@
 import { IncomingMessage } from 'http';
 
-export const getQueryParams = (req: IncomingMessage): URLSearchParams => {
-  const { url } = req;
+export const getQueryParams = (request: IncomingMessage): URLSearchParams => {
+  const { url } = request;
 
-  if (!url) throw Error('asdasd');
+  if (!url) throw Error('error');
 
   return new URLSearchParams(url.split('?')[1]);
 };

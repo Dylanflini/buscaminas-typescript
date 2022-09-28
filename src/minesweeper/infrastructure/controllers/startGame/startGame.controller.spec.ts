@@ -29,6 +29,4 @@ describe('start game controller', () => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     expect(response.body.message).toBeTruthy();
   });
-
-  it.todo('should return Internal Server Error');
 });

@@ -7,6 +7,11 @@ export interface IBoardId {
   boardId: string;
 }
 
+export interface GameModel {
+  id: string;
+  state?: 'WON' | 'LOST';
+}
+
 export interface BoardModel extends IBoardId {
   bombs_available: number;
   rows: number;
