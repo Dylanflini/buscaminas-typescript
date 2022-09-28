@@ -78,6 +78,7 @@ describe('start game', () => {
   });
 
   it('should return initial cells', async () => {
+    // same test in createCells test
     const props = { dataRepository, bombs: 1, rows: 3, columns: 2 };
 
     const { cells } = await startGameUseCase(props);
