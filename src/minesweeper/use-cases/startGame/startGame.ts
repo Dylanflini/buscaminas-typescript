@@ -25,8 +25,8 @@ export const startGameUseCase: IStartGameUseCase = async ({
 
   const cells: Cell[] = [];
 
-  for (let y = 0; y < columns; y++) {
-    for (let x = 0; x < rows; x++) {
+  for (let y = 0; y < rows; y++) {
+    for (let x = 0; x < columns; x++) {
       cells.push(new Cell([x, y]));
     }
   }
@@ -34,7 +34,7 @@ export const startGameUseCase: IStartGameUseCase = async ({
   const bombs = createBombs({ rows, columns, bombsInput });
 
   const boardWithoutId: Omit<BoardModel, 'boardId'> = {
-    cells: [...cells],
+    cells,
     bombs_available: bombsInput,
     bombs,
     rows,

@@ -1,3 +1,3 @@
 export * from './health/health';
-export * from './startGame/startGame';
+export * from './startGame/startGame.controller';
 export * from './exposeCell/exposeCell';

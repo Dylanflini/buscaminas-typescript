@@ -3,7 +3,7 @@ import { RequestListener } from '@minesweeper/infrastructure/server/types';
 import { getQueryParams } from '@minesweeper/infrastructure/server/utils/getQueryParams';
 import { ServerError } from '@minesweeper/infrastructure/server/utils/validations';
 import { startGameUseCase } from '@minesweeper/use-cases/startGame/startGame';
-import { ErrorStartGame } from '@minesweeper/use-cases/startGame/startGame.validations';
+import { MinesweeperError } from '@minesweeper/use-cases/validations';
 
 export const startGameController: RequestListener = async (req, res) => {
   const searchParams = getQueryParams(req);
@@ -13,18 +13,25 @@ export const startGameController: RequestListener = async (req, res) => {
   const bombs = Number(searchParams.get('bombs'));
 
   try {
-    const { cells, ...rest } = await startGameUseCase({ bombs, columns, rows, dataRepository });
+    const { cells, boardId } = await startGameUseCase({
+      bombs,
+      columns,
+      rows,
+      dataRepository,
+    });
 
     res.statusCode = 200;
     res.write(
       JSON.stringify({
-        board: { ...rest, cells: cells.map(cell => ({ ...cell, isExposed: cell.isExposed })) },
+        id: boardId,
+        cells: cells.map(cell => ({ ...cell, isExposed: cell.isExposed })),
       }),
     );
     res.end();
   } catch (error) {
-    if (error === ErrorStartGame.BOMBS_GREATER_THAN_ZERO) {
-      throw new ServerError(400, ErrorStartGame.BOMBS_GREATER_THAN_ZERO);
+    console.log(error);
+    if (error instanceof MinesweeperError) {
+      throw new ServerError(400, error.message);
     }
     throw new ServerError(500, 'Internal Server Error');
   }

@@ -13,5 +13,14 @@ describe('api server', () => {
     expect(res.body).toStrictEqual({ message: ServerErrorMessages.NOT_FOUND });
   });
 
+  it('should return Method Not Allowed', async () => {
+    const server = createServer(requestHandler);
+
+    const res = await request(server).post('/health');
+
+    expect(res.statusCode).toBe(405);
+    expect(res.body).toStrictEqual({ message: ServerErrorMessages.METHOD_NOT_ALLOWED });
+  });
+
   it.todo('should return Internal Server Error');
 });
