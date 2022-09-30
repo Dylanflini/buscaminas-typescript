@@ -1,3 +1,5 @@
+import { MinesweeperError } from '../validations';
+
 export enum ErrorStartGame {
   BOMBS_GREATER_THAN_ZERO = 'bombs must be greater than 0',
   ROWS_GREATER_THAN_ZERO = 'rows must be greater than 0',
@@ -7,13 +9,15 @@ export enum ErrorStartGame {
 }
 
 export const makeValidations = (bombsInput: number, rows: number, columns: number): void => {
-  if (bombsInput < 1) throw Error(ErrorStartGame.BOMBS_GREATER_THAN_ZERO);
+  if (bombsInput < 1) throw new MinesweeperError(ErrorStartGame.BOMBS_GREATER_THAN_ZERO);
 
-  if (rows < 1) throw Error(ErrorStartGame.ROWS_GREATER_THAN_ZERO);
+  if (rows < 1) throw new MinesweeperError(ErrorStartGame.ROWS_GREATER_THAN_ZERO);
 
-  if (columns < 1) throw Error(ErrorStartGame.COLUMNS_GREATER_THAN_ZERO);
+  if (columns < 1) throw new MinesweeperError(ErrorStartGame.COLUMNS_GREATER_THAN_ZERO);
 
-  if (rows < 2 && columns < 2) throw new Error(ErrorStartGame.ROWS_AND_COLUMNS_GREATER_THAN_ONE);
+  if (rows < 2 && columns < 2)
+    throw new MinesweeperError(ErrorStartGame.ROWS_AND_COLUMNS_GREATER_THAN_ONE);
 
-  if (bombsInput >= columns * rows) throw Error(ErrorStartGame.BOMBS_GREATER_THAN_TOTAL_CELLS);
+  if (bombsInput >= columns * rows)
+    throw new MinesweeperError(ErrorStartGame.BOMBS_GREATER_THAN_TOTAL_CELLS);
 };

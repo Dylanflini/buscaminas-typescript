@@ -1,6 +1,12 @@
 import { IPosition, TPosition } from './Position.model';
 
-export class Cell implements IPosition {
+interface ICell {
+  hasBomb?: boolean;
+  adjacentBombs?: number;
+  isExposed: boolean;
+}
+
+export class Cell implements IPosition, ICell {
   /**
    * represent internal state of cell
    *
@@ -14,7 +20,10 @@ export class Cell implements IPosition {
    */
   public adjacentBombs?: number | undefined;
 
-  constructor(public position: TPosition, config: Partial<Cell> = {}) {
+  constructor(
+    public position: TPosition,
+    config: Partial<Omit<Cell, 'position' | 'isExposed'>> = {},
+  ) {
     Object.assign(this, config);
   }
 

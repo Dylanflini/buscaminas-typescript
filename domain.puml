@@ -1,4 +1,6 @@
-object board_game
+object game {
+  state?: 'WON' | 'LOST'
+}
 object minesweeper
 
 object board {
@@ -33,7 +35,7 @@ object flag {
   position = array
 }
 
-board_game -> minesweeper
+game -> minesweeper
 minesweeper *-- board
 neighbors_bombs_counter o-- "n" board
 bomb o-- "n" board

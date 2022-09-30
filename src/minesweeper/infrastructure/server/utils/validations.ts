@@ -1,7 +1,11 @@
 export enum ServerErrorMessages {
-  NOT_FOUND = '[Server Error] route or file not found',
+  NOT_FOUND = 'route or file not found',
+  METHOD_NOT_ALLOWED = 'method not supported',
 }
 
-export class ServerError {
-  constructor(public code: number, public message: ServerErrorMessages) {}
+export class ServerError extends Error {
+  constructor(public code: number, public message: string) {
+    super();
+    this.name = 'Server Error';
+  }
 }

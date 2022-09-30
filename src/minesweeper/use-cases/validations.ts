@@ -1,6 +1,13 @@
 import { BoardModel, IPosition } from '@minesweeper/domain/models';
 import { hasSamePosition, isNaturalNumber } from '@minesweeper/utils';
 
+export class MinesweeperError extends Error {
+  constructor(public message: string) {
+    super();
+    this.name = 'Minesweeper Game Error';
+  }
+}
+
 export enum GeneralError {
   NOT_NATURAL_NUMBER = '[General Error] You only can add natural numbers (0,1,2,3,...)',
   CELL_ALREADY_EXPOSED = '[Error] You cannot do any action where there is an already exposed cell',

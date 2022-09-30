@@ -18,7 +18,7 @@ export const boardMocked: BoardModel = {
   rows: 10,
   columns: 10,
   bombs: [{ position: [0, 0] }],
-  cells: [new Cell([0, 0])],
+  cells: cells2x2,
   neighBorsBombsCounter: [{ position: [0, 0], quantity: 5 }],
   flags: [],
 };
