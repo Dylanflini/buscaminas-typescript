@@ -7,15 +7,6 @@ import { ErrorStartGame } from './startGame.validations';
 
 describe('start game', () => {
   describe('props validations', () => {
-    it('should throw error if props columns or rows are not valid', async () => {
-      const fn = () => startGameUseCase({ dataRepository, bombs: 1, columns: 1, rows: 1 });
-
-      await expect(fn()).rejects.toBeInstanceOf(MinesweeperError);
-      await expect(fn()).rejects.toThrowError(
-        new MinesweeperError(ErrorStartGame.ROWS_AND_COLUMNS_GREATER_THAN_ONE),
-      );
-    });
-
     it('should throw error if props columns or rows are less than 1', async () => {
       await expect(
         startGameUseCase({ dataRepository, bombs: 1, columns: 4, rows: 0 }),
@@ -49,18 +40,18 @@ describe('start game', () => {
       await expect(fn).rejects.toThrowError(ErrorStartGame.BOMBS_GREATER_THAN_ZERO);
     });
 
-    it('should throw error if bombs are greater or equal than total cells', async () => {
-      await expect(
-        startGameUseCase({ dataRepository, bombs: 4, rows: 2, columns: 2 }),
-      ).rejects.toBeInstanceOf(MinesweeperError);
+    it.each([
+      [{ bombs: 1, rows: 1, columns: 1 }],
+      [{ bombs: 4, rows: 2, columns: 2 }],
+      [{ bombs: 5, rows: 2, columns: 2 }],
+    ])('should throw error if bombs are greater or equal than total cells', async params => {
+      await expect(startGameUseCase({ dataRepository, ...params })).rejects.toBeInstanceOf(
+        MinesweeperError,
+      );
 
-      await expect(
-        startGameUseCase({ dataRepository, bombs: 4, rows: 2, columns: 2 }),
-      ).rejects.toThrowError(ErrorStartGame.BOMBS_GREATER_THAN_TOTAL_CELLS);
-
-      await expect(
-        startGameUseCase({ dataRepository, bombs: 5, rows: 2, columns: 2 }),
-      ).rejects.toThrowError(ErrorStartGame.BOMBS_GREATER_THAN_TOTAL_CELLS);
+      await expect(startGameUseCase({ dataRepository, ...params })).rejects.toThrowError(
+        ErrorStartGame.BOMBS_LESS_THAN_TOTAL_CELLS,
+      );
     });
   });
 
