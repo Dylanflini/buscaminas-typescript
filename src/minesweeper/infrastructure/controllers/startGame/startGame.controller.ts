@@ -1,17 +1,29 @@
 import { dataRepository } from '@minesweeper/infrastructure/data';
-import { RequestListener } from '@minesweeper/infrastructure/server/types';
-import { getQueryParams } from '@minesweeper/infrastructure/server/utils/getQueryParams';
+import { RequestListener } from 'http';
+import {
+  getQueryParams,
+  GetQueryParamsError,
+} from '@minesweeper/infrastructure/server/utils/getQueryParams';
 import { ServerError } from '@minesweeper/infrastructure/server/utils/validations';
 import { startGameUseCase } from '@minesweeper/use-cases/startGame/startGame';
 import { MinesweeperError } from '@minesweeper/use-cases/validations';
 
 export const startGameController: RequestListener = async (request, response) => {
   try {
-    const searchParams = getQueryParams(request);
+    const searchParams = getQueryParams(request.url);
+    const bombsParam = searchParams.get('bombs');
+    const rowsParam = searchParams.get('rows');
+    const columnsParam = searchParams.get('columns');
 
-    const rows = Number(searchParams.get('rows'));
-    const columns = Number(searchParams.get('columns'));
-    const bombs = Number(searchParams.get('bombs'));
+    if (!bombsParam) throw new ServerError(400, 'bombs param is required');
+
+    if (!rowsParam) throw new ServerError(400, 'rows param is required');
+
+    if (!columnsParam) throw new ServerError(400, 'columns param is required');
+
+    const bombs = Number(bombsParam);
+    const rows = Number(rowsParam);
+    const columns = Number(columnsParam);
 
     const { cells, boardId } = await startGameUseCase({
       bombs,
@@ -31,10 +43,10 @@ export const startGameController: RequestListener = async (request, response) =>
 
     response.end();
   } catch (error) {
-    console.log(error);
-    if (error instanceof MinesweeperError) {
+    if (error instanceof GetQueryParamsError || error instanceof MinesweeperError) {
       throw new ServerError(400, error.message);
     }
-    throw new ServerError(500, 'Internal Server Error');
+
+    throw error;
   }
 };
