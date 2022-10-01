@@ -3,10 +3,37 @@ import { Cell } from '@minesweeper/domain/models';
 import { dataRepository } from '@minesweeper/infrastructure/data';
 import { MinesweeperError } from '../validations';
 import { startGameUseCase } from './startGame';
-import { ErrorStartGame } from './startGame.validations';
+import { StartGameErrorMessages } from './startGame.validations';
 
 describe('start game', () => {
   describe('props validations', () => {
+    it.each([[NaN], [0.5], [Infinity], [-Infinity]])(
+      'should throw error if bombs parameter is not a integer number',
+      async bombs => {
+        await expect(
+          startGameUseCase({ dataRepository, bombs, columns: 4, rows: 0 }),
+        ).rejects.toThrowError(StartGameErrorMessages.BOMBS_IS_INTEGER);
+      },
+    );
+
+    it.each([[NaN], [0.5], [Infinity], [-Infinity]])(
+      'should throw error if rows parameter is not a integer number',
+      async rows => {
+        await expect(
+          startGameUseCase({ dataRepository, bombs: 1, columns: 4, rows }),
+        ).rejects.toThrowError(StartGameErrorMessages.ROWS_IS_INTEGER);
+      },
+    );
+
+    it.each([[NaN], [0.5], [Infinity], [-Infinity]])(
+      'should throw error if columns parameter is not a integer number',
+      async columns => {
+        await expect(
+          startGameUseCase({ dataRepository, bombs: 1, columns, rows: 3 }),
+        ).rejects.toThrowError(StartGameErrorMessages.COLUMNS_IS_INTEGER);
+      },
+    );
+
     it('should throw error if props columns or rows are less than 1', async () => {
       await expect(
         startGameUseCase({ dataRepository, bombs: 1, columns: 4, rows: 0 }),
@@ -14,11 +41,11 @@ describe('start game', () => {
 
       await expect(
         startGameUseCase({ dataRepository, bombs: 1, columns: 4, rows: 0 }),
-      ).rejects.toThrowError(ErrorStartGame.ROWS_GREATER_THAN_ZERO);
+      ).rejects.toThrowError(StartGameErrorMessages.ROWS_GREATER_THAN_ZERO);
 
       await expect(
         startGameUseCase({ dataRepository, bombs: 1, columns: 4, rows: -1 }),
-      ).rejects.toThrowError(ErrorStartGame.ROWS_GREATER_THAN_ZERO);
+      ).rejects.toThrowError(StartGameErrorMessages.ROWS_GREATER_THAN_ZERO);
 
       await expect(
         startGameUseCase({ dataRepository, bombs: 1, columns: 0, rows: 3 }),
@@ -26,18 +53,18 @@ describe('start game', () => {
 
       await expect(
         startGameUseCase({ dataRepository, bombs: 1, columns: 0, rows: 3 }),
-      ).rejects.toThrowError(ErrorStartGame.COLUMNS_GREATER_THAN_ZERO);
+      ).rejects.toThrowError(StartGameErrorMessages.COLUMNS_GREATER_THAN_ZERO);
 
       await expect(
         startGameUseCase({ dataRepository, bombs: 1, columns: -1, rows: 3 }),
-      ).rejects.toThrowError(ErrorStartGame.COLUMNS_GREATER_THAN_ZERO);
+      ).rejects.toThrowError(StartGameErrorMessages.COLUMNS_GREATER_THAN_ZERO);
     });
 
     it('should throw error if props not contain bombs', async () => {
       const fn = () => startGameUseCase({ dataRepository, bombs: 0, rows: 2, columns: 2 });
 
       await expect(fn).rejects.toBeInstanceOf(MinesweeperError);
-      await expect(fn).rejects.toThrowError(ErrorStartGame.BOMBS_GREATER_THAN_ZERO);
+      await expect(fn).rejects.toThrowError(StartGameErrorMessages.BOMBS_GREATER_THAN_ZERO);
     });
 
     it.each([
@@ -50,7 +77,7 @@ describe('start game', () => {
       );
 
       await expect(startGameUseCase({ dataRepository, ...params })).rejects.toThrowError(
-        ErrorStartGame.BOMBS_LESS_THAN_TOTAL_CELLS,
+        StartGameErrorMessages.BOMBS_LESS_THAN_TOTAL_CELLS,
       );
     });
   });
