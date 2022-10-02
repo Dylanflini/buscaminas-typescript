@@ -10,7 +10,7 @@ export class GetQueryParamsError extends Error {
   }
 }
 
-export const getQueryParams = (url: string | undefined): URLSearchParams => {
+export const getSearchParams = (url: string | undefined): URLSearchParams => {
   const { NOT_URL, NOT_VALID_URL, NOT_CONTAIN_QUERY_PARAMS } = GetQueryParamsErrorMessages;
 
   if (!url) throw new GetQueryParamsError(NOT_URL);

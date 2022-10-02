@@ -1,7 +1,7 @@
 import { dataRepository } from '@minesweeper/infrastructure/data';
 import { RequestListener } from 'http';
 import {
-  getQueryParams,
+  getSearchParams,
   GetQueryParamsError,
 } from '@minesweeper/infrastructure/server/utils/getQueryParams';
 import { ServerError } from '@minesweeper/infrastructure/server/utils/validations';
@@ -10,20 +10,17 @@ import { MinesweeperError } from '@minesweeper/use-cases/validations';
 
 export const startGameController: RequestListener = async (request, response) => {
   try {
-    const searchParams = getQueryParams(request.url);
-    const bombsParam = searchParams.get('bombs');
-    const rowsParam = searchParams.get('rows');
-    const columnsParam = searchParams.get('columns');
+    const searchParams = getSearchParams(request.url);
 
-    if (!bombsParam) throw new ServerError(400, 'bombs param is required');
+    const requiredGameParams = ['bombs', 'rows', 'columns'];
 
-    if (!rowsParam) throw new ServerError(400, 'rows param is required');
+    const [bombs, rows, columns] = requiredGameParams.map(param => {
+      const searchParam = searchParams.get(param);
 
-    if (!columnsParam) throw new ServerError(400, 'columns param is required');
+      if (!searchParam) throw new ServerError(400, `${param} param is required`);
 
-    const bombs = Number(bombsParam);
-    const rows = Number(rowsParam);
-    const columns = Number(columnsParam);
+      return Number(searchParam);
+    });
 
     const { cells, boardId } = await startGameUseCase({
       bombs,
