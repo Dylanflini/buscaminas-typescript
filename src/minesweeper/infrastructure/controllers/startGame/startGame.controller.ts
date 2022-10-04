@@ -22,7 +22,7 @@ export const startGameController: RequestListener = async (request, response) =>
       return Number(searchParam);
     });
 
-    const { cells, boardId } = await startGameUseCase({
+    const board = await startGameUseCase({
       bombs,
       columns,
       rows,
@@ -33,8 +33,8 @@ export const startGameController: RequestListener = async (request, response) =>
 
     response.write(
       JSON.stringify({
-        id: boardId,
-        cells: cells.map(cell => ({ ...cell, isExposed: cell.isExposed })),
+        ...board,
+        cells: board.cells.map(cell => ({ ...cell, isExposed: cell.isExposed })),
       }),
     );
 
