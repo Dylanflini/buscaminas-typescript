@@ -3,6 +3,7 @@ import {
   healthController,
   startGameController,
 } from '@minesweeper/infrastructure/controllers';
+import { endpoints } from './constants';
 import { Router } from './utils/routerHandler';
 
 const router = Router();
@@ -11,5 +12,6 @@ const router = Router();
 router.get('/health', healthController); //router example
 router.get('/start', startGameController);
 router.patch('/cells', patchCellController);
+router.get(endpoints.game, startGameController);
 
 export default router;
