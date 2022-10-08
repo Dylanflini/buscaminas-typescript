@@ -1,10 +1,13 @@
-import { IncomingMessage } from 'http';
+import { exposeCellUseCase } from '@minesweeper/use-cases/exposeCell/exposeCell';
 
 import { dataRepository } from '@minesweeper/infrastructure/data';
 import { RequestListener } from '@minesweeper/infrastructure/server/types';
-import { exposeCellUseCase } from '@minesweeper/use-cases/exposeCell/exposeCell';
-import getBody, { UnknownObject } from '@minesweeper/infrastructure/server/utils/getBody';
+import getBody from '@minesweeper/infrastructure/server/utils/getBody';
 import { ServerError } from '@minesweeper/infrastructure/server/utils/validations';
+
+/**
+ * Types
+ */
 
 type TPosition = [number, number];
 
@@ -41,23 +44,19 @@ const validations = (requestBody: Partial<BodyRequest>) => {
 };
 
 export enum CellErrorMessages {
-  BODY_EMPTY = 'Must send body',
+  BODY_EMPTY = 'Must send data in the body',
 
-  BODY_WITHOUT_POSITION_PROPERTY = 'Must send body position property',
-  BODY_POSITION_NOT_ARRAY = 'Must send body position property as an array',
-  BODY_POSITION_NOT_TWO_ELEMENTS = 'Must send body two elements in position property',
-  BODY_POSITION_ELEMENTS_ARE_NOT_NUMBERS = 'Must send body position property elements as numbers',
+  BODY_WITHOUT_POSITION_PROPERTY = 'Must send position property in the body',
+  BODY_POSITION_NOT_ARRAY = 'Must send position property as an array',
+  BODY_POSITION_NOT_TWO_ELEMENTS = 'Must send two elements in position property',
+  BODY_POSITION_ELEMENTS_ARE_NOT_NUMBERS = 'Must send position property elements as numbers',
 
   NOT_BOARD_ID = 'Must provide id of board to play',
   BOARD_ID_NOT_STRING = 'Must provide a board id as string',
 }
 
-export const patchCellController: RequestListener = async (request, response) => {
-  // const board = await exposeCellUseCase({ boardId: '123123', position: [1, 0], dataRepository });
-
+export const exposeCellController: RequestListener = async (request, response) => {
   const requestBody = await getBody(request);
-
-  // const position = Object.entries(requestBody).find(entry => entry[0] === 'position')?.[1]
 
   const {
     BODY_IS_EMPTY,
@@ -96,65 +95,27 @@ export const patchCellController: RequestListener = async (request, response) =>
   if (!BODY_HAS_BOARD_ID_PROPERTY) throw new ServerError(400, CellErrorMessages.NOT_BOARD_ID);
   if (!BOARD_ID_IS_STRING) throw new ServerError(400, CellErrorMessages.BOARD_ID_NOT_STRING);
 
-  // response.statusCode = 200;
-
-  requestBodyValidated.position;
-
-  const position = Object.entries(requestBody).find(
+  const position = Object.entries(requestBodyValidated).find(
     entry => entry[0] === 'position',
   )?.[1] as TPosition;
-  const boardId = Object.entries(requestBody).find(entry => entry[0] === 'boardId')?.[1] as string;
+  const boardId = Object.entries(requestBodyValidated).find(
+    entry => entry[0] === 'boardId',
+  )?.[1] as string;
 
-  console.log({ position });
-  console.log({ boardId });
+  // This try catch can be a decorator
+  try {
+    const board = await exposeCellUseCase({ boardId, position, dataRepository });
 
-  // if (Array.isArray(position)) {
-
-  //   const [x, y] = position as TPosition
-
-  //   if(typeof x === 'number' && typeof y === 'number' ){
-
-  //   if(typeof boardId === 'string'){
-
-  const board = await exposeCellUseCase({ boardId, position, dataRepository });
-
-  response.statusCode = 200;
-  response.write(
-    JSON.stringify({
-      ...board,
-      cells: board.cells.map(cell => ({ ...cell, isExposed: cell.isExposed })),
-    }),
-  );
-  response.end();
-
-  //     }
-  //   }
-
-  // const isNumberArray =
-  //   position.length > 0 &&
-  //   position.every(value => {
-  //     return typeof value === 'number';
-  //   });
-
-  // if (isNumberArray) {
-  //   const a = position[0];
-  // }
-
-  // console.log(isNumberArray);
-  // }
-
-  // response.statusCode = 200
-  // response.end();
-
-  // console.log({ position });
-  // console.log({ boardId });
-  // //@ts-ignore
-  // const board = await exposeCellUseCase({ boardId, position, dataRepository });
-
-  // response.write(
-  //   JSON.stringify({
-  //     // board
-  //   }),
-  // );
-  // response.end();
+    response.statusCode = 200;
+    response.write(
+      JSON.stringify({
+        ...board,
+        cells: board.cells.map(cell => ({ ...cell, isExposed: cell.isExposed })),
+      }),
+    );
+    response.end();
+  } catch (error) {
+    // What to do if not ?
+    if (error instanceof ServerError) throw new ServerError(500, error.message);
+  }
 };

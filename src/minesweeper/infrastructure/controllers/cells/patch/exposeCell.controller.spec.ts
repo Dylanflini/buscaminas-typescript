@@ -1,17 +1,25 @@
 import request from 'supertest';
 import { createServer } from 'http';
+
 import { requestHandler } from '@minesweeper/infrastructure/server/requestHandler';
 import { endpoints } from '@minesweeper/infrastructure/server/constants';
-import { GetQueryParamsErrorMessages } from '@minesweeper/infrastructure/server/utils/getQueryParams';
+
 import { PublicBoardModel } from '@minesweeper/domain/models';
-import { CellErrorMessages } from './cell.patch.controller';
+
+import { CellErrorMessages } from './exposeCell.controller';
 
 describe('patch cell controller', () => {
   interface TestResponse extends request.Response {
+    header: {
+      'content-type': string;
+    };
     body: PublicBoardModel;
   }
 
   interface TestErrorResponse extends request.Response {
+    header: {
+      'content-type': string;
+    };
     body: { message: string };
   }
 
@@ -110,18 +118,29 @@ describe('patch cell controller', () => {
   });
 
   describe('200 validations', () => {
-    // Empty
-    // it('should return response with status code 200 and content type json', async () => {
-    //   const server = createServer(requestHandler);
-    //   const startResponse = await request(server).get(`${endpoints.game}?bombs=1&rows=2&columns=2`);
-    //   expect(startResponse.statusCode).toBe(200);
-    //   expect(startResponse.header['content-type']).toBe('application/json');
-    // });
+    it('should return response with status code 200 and content type json', async () => {
+      const server = createServer(requestHandler);
+      const startResponse: TestResponse = await request(server).get(
+        `${endpoints.game}?bombs=2&rows=3&columns=3`,
+      );
+      expect(startResponse.statusCode).toBe(200);
+      expect(startResponse.header['content-type']).toBe('application/json');
+
+      const selectedCell = startResponse.body.cells[0]; // 0x0
+
+      const patchCellResponse: TestResponse = await request(server).patch(endpoints.cells).send({
+        boardId: '111222333',
+        position: selectedCell.position,
+      });
+
+      expect(patchCellResponse.statusCode).toBe(200);
+      expect(patchCellResponse.header['content-type']).toBe('application/json');
+    });
 
     it('should return response with id', async () => {
       const server = createServer(requestHandler);
       const startResponse: TestResponse = await request(server).get(
-        `${endpoints.game}?bombs=2&rows=3&columns=3`,
+        `${endpoints.game}?bombs=2&rows=4&columns=4`,
       );
 
       const { boardId, cells } = startResponse.body;
@@ -150,18 +169,5 @@ describe('patch cell controller', () => {
 
       expect(patchCellResponse.status).toBe(200);
     });
-
-    // it('should return response with cells', async () => {
-    //   const server = createServer(requestHandler);
-    //   const response: TestResponse = await request(server).get(
-    //     `${endpoints.game}?bombs=1&rows=2&columns=2`,
-    //   );
-    //   expect(response.body.cells).toStrictEqual([
-    //     { position: [0, 0], isExposed: false },
-    //     { position: [1, 0], isExposed: false },
-    //     { position: [0, 1], isExposed: false },
-    //     { position: [1, 1], isExposed: false },
-    //   ]);
-    // });
   });
 });
