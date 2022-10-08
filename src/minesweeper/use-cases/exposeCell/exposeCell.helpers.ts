@@ -22,6 +22,7 @@ const addAdjacentBombsToAdjacentCells = (board: BoardModel, item: Cell) => {
 
 export const repeatablyExposeEmptyCells = (board: BoardModel) => {
   while (board.cells.some(cellWithoutCheck)) {
+    console.log('repeatablyExposeEmptyCells');
     board.cells.filter(cellWithoutCheck).map(item => {
       if (!hasSomeWithSamePosition(board.bombs, item)) item.hasBomb = false;
 

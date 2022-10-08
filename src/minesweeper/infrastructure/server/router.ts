@@ -11,7 +11,7 @@ const router = Router();
 /* add here your routes :D */
 router.get('/health', healthController); //router example
 router.get('/start', startGameController);
-router.patch('/cells', patchCellController);
+router.patch(endpoints.cells, patchCellController);
 router.get(endpoints.game, startGameController);
 
 export default router;
