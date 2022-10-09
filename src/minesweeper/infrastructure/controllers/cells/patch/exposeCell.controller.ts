@@ -116,6 +116,6 @@ export const exposeCellController: RequestListener = async (request, response) =
     response.end();
   } catch (error) {
     // What to do if not ?
-    if (error instanceof ServerError) throw new ServerError(500, error.message);
+    throw error
   }
 };
