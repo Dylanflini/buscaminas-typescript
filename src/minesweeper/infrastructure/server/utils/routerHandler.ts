@@ -5,6 +5,7 @@ enum Methods {
   GET = 'GET',
   POST = 'POST',
   PATCH = 'PATCH',
+  DELETE = 'DELETE',
 }
 
 interface Route {
@@ -28,6 +29,10 @@ export const Router = () => {
 
   const patch: RouteHandler = (url, callback) => {
     routes.push({ method: Methods.PATCH, url, callback });
+  };
+
+  const remove: RouteHandler = (url, callback) => {
+    routes.push({ method: Methods.DELETE, url, callback });
   };
 
   const execRoute: RequestListener = (request, response) => {
@@ -55,6 +60,7 @@ export const Router = () => {
     get,
     post,
     patch,
+    remove,
     execRoute,
   };
 };

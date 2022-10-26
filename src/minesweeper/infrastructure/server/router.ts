@@ -2,6 +2,7 @@ import {
   exposeCellController,
   healthController,
   startGameController,
+  deleteFlagController,
 } from '@minesweeper/infrastructure/controllers';
 import { endpoints } from './constants';
 import { Router } from './utils/routerHandler';
@@ -13,5 +14,6 @@ router.get('/health', healthController); //router example
 router.get('/start', startGameController);
 router.patch(endpoints.cells, exposeCellController);
 router.get(endpoints.game, startGameController);
+router.remove(endpoints.flags, deleteFlagController);
 
 export default router;
