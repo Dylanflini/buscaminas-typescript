@@ -7,8 +7,8 @@ import { ServerError } from '@minesweeper/infrastructure/server/utils/validation
 import { PositionErrorMessages } from '../constants/positionErrors.enum';
 import { PositionBodyRequest } from '../types/controller.type';
 
-export const runPositionValidations = (requestBody: Partial<PositionBodyRequest>) => {
-  const requestKeys = Object.keys(requestBody);
+export const runPositionValidations = (requestBody: Partial<PositionBodyRequest> | null) => {
+  const requestKeys = Object.keys(requestBody || {});
 
   const bodyIsEmpty = requestKeys.length === 0 || !requestBody;
   const bodyHasPositionProperty = requestKeys.some(key => key === 'position');
@@ -22,19 +22,19 @@ export const runPositionValidations = (requestBody: Partial<PositionBodyRequest>
     BODY_HAS_POSITION_PROPERTY: !bodyIsEmpty && bodyHasPositionProperty,
     BODY_POSITION_IS_ARRAY: bodyHasPositionProperty && bodyPositionIsArray,
     BODY_POSITION_HAS_TWO_ELEMENTS:
-      bodyPositionIsArray && (requestBody.position as [number, number]).length === 2,
+      bodyPositionIsArray && (requestBody?.position as [number, number]).length === 2,
     BODY_POSITION_ELEMENTS_ARE_NUMBERS:
       bodyPositionIsArray &&
-      (requestBody.position as [number, number]).every(item => typeof item === 'number'),
+      (requestBody?.position as [number, number]).every(item => typeof item === 'number'),
 
     BODY_HAS_BOARD_ID_PROPERTY: !bodyIsEmpty && bodyHasBoardIdProperty,
-    BOARD_ID_IS_STRING: bodyHasBoardIdProperty && typeof requestBody.boardId === 'string',
+    BOARD_ID_IS_STRING: bodyHasBoardIdProperty && typeof requestBody?.boardId === 'string',
 
     requestBodyValidated: requestBody as PositionBodyRequest,
   };
 };
 
-export const getPositionValidationErrors = (requestBody: Partial<PositionBodyRequest>) => {
+export const getPositionValidationErrors = (requestBody: Partial<PositionBodyRequest> | null) => {
   const {
     BODY_IS_EMPTY,
     BODY_HAS_POSITION_PROPERTY,
